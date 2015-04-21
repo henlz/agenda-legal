@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.2.2.BUILD-SNAPSHOT</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+	
+	<groupId>br.udc.engeharia</groupId>
+	<artifactId>agenda</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
+
+	<properties>
+		<!-- General -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<start-class>br.udc.engenharia.agenda.Application</start-class>
+		<java.version>1.8</java.version>
+		
+		<spring-loaded.version>1.2.1.RELEASE</spring-loaded.version>
+		<hikaricp.version>2.3.2</hikaricp.version>
+		<postgresql.version>9.4-1200-jdbc41</postgresql.version>
+		<dwr.version>3.0.2-RELEASE</dwr.version>
+		
+		<!-- JCR -->
+        <modeshape.version>3.6.0.Final</modeshape.version>
+        <infinispan.version>5.3.0.Final</infinispan.version>
+		
+		<!-- Testing -->
+		<dbunit.version>2.5.0</dbunit.version>
+		<springtestdbunit.version>1.2.0-RELEASE</springtestdbunit.version>
+		
+		<!-- Webjars -->
+		<jquery.version>2.1.3</jquery.version>
+		<jquery-ui.version>1.11.4</jquery-ui.version>
+		<angularjs.version>1.3.13</angularjs.version>
+		<angular-material.version>0.8.3</angular-material.version>
+		<uirouter.version>0.2.13</uirouter.version>
+		<eits-webjars.version>1.0.0</eits-webjars.version>
+		<angular-ui-calendar-webjars.version>0.9.0-beta.1</angular-ui-calendar-webjars.version>
+		<ng-grid-webjars.version>2.0.14</ng-grid-webjars.version>
+		<ui-date-webjars.version>0.0.5</ui-date-webjars.version>
+	</properties>
+	
+	<!-- Profiles -->
+	<profiles>
+		<profile>
+			<id>development</id>
+			<activation>
+          		<activeByDefault>true</activeByDefault>
+        	</activation>
+			<properties>
+				<!-- Database -->
+				<mvn.jdbc.jdbcUrl>jdbc:postgresql://127.0.0.1/agenda</mvn.jdbc.jdbcUrl>
+				<mvn.jdbc.username>agenda</mvn.jdbc.username>
+				<mvn.jdbc.password>agenda</mvn.jdbc.password>
+
+				<!-- Hibernate -->
+				<mvn.hibernate.hbm2ddl>update</mvn.hibernate.hbm2ddl>
+				<mvn.hibernate.showSql>true</mvn.hibernate.showSql>
+			</properties>
+		</profile>
+		
+		<profile>
+			<id>sandbox</id>
+			<properties>
+				<!-- Database -->
+				<mvn.jdbc.jdbcUrl>jdbc:postgresql://127.0.0.1/agenda</mvn.jdbc.jdbcUrl>
+				<mvn.jdbc.username>agenda</mvn.jdbc.username>
+				<mvn.jdbc.password>agenda</mvn.jdbc.password>
+
+				<!-- Hibernate -->
+				<mvn.hibernate.hbm2ddl>update</mvn.hibernate.hbm2ddl>
+				<mvn.hibernate.showSql>true</mvn.hibernate.showSql>
+			</properties>
+		</profile>
+	</profiles>
+	
+	<!-- Build -->
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<dependencies>
+			        <dependency>
+			            <groupId>org.springframework</groupId>
+			            <artifactId>springloaded</artifactId>
+			            <version>${spring-loaded.version}</version>
+			        </dependency>
+			    </dependencies>
+			</plugin>
+		</plugins>
+	</build>
+	
+	<dependencies>
+	
+		<!-- Spring Loaded -->
+		<dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>springloaded</artifactId>
+        </dependency>
+        
+        <!-- Spring Boot -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+     		<groupId>org.springframework.security</groupId>
+     		<artifactId>spring-security-taglibs</artifactId>
+ 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-aop</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Web Container -->
+		<dependency>
+    		<groupId>org.apache.tomcat.embed</groupId>
+    		<artifactId>tomcat-embed-jasper</artifactId>
+    		<scope>provided</scope>
+		</dependency>
+		<dependency>
+        	<groupId>javax.servlet</groupId>
+        	<artifactId>jstl</artifactId>
+    	</dependency>
+    	
+		<!-- Testing -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.dbunit</groupId>
+			<artifactId>dbunit</artifactId>
+			<version>${dbunit.version}</version>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<artifactId>junit</artifactId>
+					<groupId>junit</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+		  <groupId>com.github.springtestdbunit</groupId>
+		  <artifactId>spring-test-dbunit</artifactId>
+		  <version>${springtestdbunit.version}</version>
+		</dependency>
+		
+		<!-- DataSource -->
+		<dependency>
+		    <groupId>org.hibernate</groupId>
+		    <artifactId>hibernate-envers</artifactId>
+		</dependency>
+	  	<dependency>
+	        <groupId>com.zaxxer</groupId>
+	        <artifactId>HikariCP</artifactId>
+	    </dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+  			<artifactId>postgresql</artifactId>
+  			<version>${postgresql.version}</version>
+  		</dependency>
+  		
+  		<!-- DWR -->
+		<dependency>
+    		<groupId>org.directwebremoting</groupId>
+    		<artifactId>dwr</artifactId>
+    		<version>${dwr.version}</version>
+  		</dependency>
+  		
+    	<!-- JCR - ModeShape -->
+        <dependency>
+            <groupId>org.modeshape</groupId>
+            <artifactId>modeshape-jcr</artifactId>
+            <version>${modeshape.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.infinispan</groupId>
+          <artifactId>infinispan-cachestore-jdbm</artifactId>
+          <version>${infinispan.version}</version>
+        </dependency>
+        
+        <!-- Upload -->
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>1.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.4</version>
+        </dependency>
+  		
+  		<!-- WebJars -->
+  		<dependency>
+    		<groupId>org.webjars</groupId>
+    		<artifactId>angularjs</artifactId>
+    		<version>${angularjs.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.webjars</groupId>
+		    <artifactId>angular-material</artifactId>
+		    <version>${angular-material.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.webjars</groupId>
+		    <artifactId>jquery</artifactId>
+		    <version>${jquery.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.webjars</groupId>
+		    <artifactId>jquery-ui</artifactId>
+		    <version>${jquery-ui.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.webjars</groupId>
+		    <artifactId>angular-ui-router</artifactId>
+		    <version>${uirouter.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>eits-webjars</artifactId>
+			<version>${eits-webjars.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>angular-ui-calendar</artifactId>
+			<version>${angular-ui-calendar-webjars.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>ng-grid</artifactId>
+			<version>${ng-grid-webjars.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>angular-ui-date</artifactId>
+			<version>${ui-date-webjars.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.scala-lang</groupId>
+			<artifactId>scala-library</artifactId>
+			<version>2.10.4</version>
+		</dependency>
+	</dependencies>
+
+	<repositories>
+		<repository>
+			<id>eits-repository</id>
+			<url>http://maven.eits.com.br/content/repositories/releases</url>
+		</repository>
+		<repository>
+			<id>spring-snapshots</id>
+			<name>Spring Snapshots</name>
+			<url>https://repo.spring.io/snapshot</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>spring-milestones</id>
+			<name>Spring Milestones</name>
+			<url>https://repo.spring.io/milestone</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>spring-snapshots</id>
+			<name>Spring Snapshots</name>
+			<url>https://repo.spring.io/snapshot</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
+			<id>spring-milestones</id>
+			<name>Spring Milestones</name>
+			<url>https://repo.spring.io/milestone</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
+	
+</project>

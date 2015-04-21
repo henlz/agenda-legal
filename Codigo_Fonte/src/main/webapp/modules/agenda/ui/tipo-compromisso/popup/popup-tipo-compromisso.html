@@ -1,0 +1,30 @@
+<md-dialog aria-label="Mango (Fruit)">
+    <md-content>
+
+        <h2>{{ modoAlteracao ? 'Alterar' : 'Nova' }} Categoria de Compromisso</h2>
+
+        <form name="tipoForm" novalidate="true">
+            <md-input-container>
+                <label>Descrição</label>
+                <input name="descricao" ng-model="entidade.descricao" required>
+                <div ng-messages="estrategiaForm.descricao.$error">
+                    <div ng-message="required">
+                        Campo obrigatório.
+                    </div>
+                </div>
+            </md-input-container>
+            
+            
+
+            <div class="md-actions" layout="row">
+                <md-button ng-click="cancelar()">
+                    Cancelar
+                </md-button>
+                <md-button ng-click="salvar()" class="md-primary">
+                    Salvar
+                </md-button>
+            </div>
+        </form>
+
+    </md-content>
+</md-dialog>

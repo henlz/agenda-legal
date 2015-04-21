@@ -1,0 +1,100 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<!DOCTYPE html>
+<html xmlns:ng="http://angularjs.org" lang="pt" ng-init="initialize()">
+	<form id="formCompromisso" novalidate="true">
+		<md-content md-theme="docs-dark" class="md-padding" layout="column" layout-sm="column">
+	    	<md-content layout="row">
+			    <md-input-container>
+			      <label>Título</label>
+			      <input name="titulo" ng-model="currentEntity.titulo" required>
+			      
+			      <div ng-messages="formCompromisso.titulo.$error">
+                  	  <div ng-message="required">
+                          Campo obrigatório.
+                      </div>
+                  </div>
+			    </md-input-container>
+			    
+			    <md-input-container>
+			      <label>Descrição</label>
+			      <input ng-model="currentEntity.descricao">
+			    </md-input-container>
+			    
+			    <md-input-container>
+			      <label>Observações</label>
+			      <input ng-model="currentEntity.observacoes">
+			    </md-input-container>
+		    </md-content>
+		    
+		    <md-content layout="row">
+		    	<md-input-container>
+			      <label>Data Início</label>
+			      <input name="dataInicio" ng-model="currentEntity.dataInicio" ui-date="dateOptions" required>
+			      <div ng-messages="formCompromisso.dataInicio.$error">
+                  	  <div ng-message="required">
+                          Campo obrigatório.
+                      </div>
+                  </div>			      
+			    </md-input-container>
+			    <md-input-container>
+			    	<label>Hora</label>
+			    	<input ng-model="currentEntity.dataInicio" type="time" required>
+			    </md-input-container>
+		    </md-content>
+		    
+		    <md-content layout="row">
+		    	<md-input-container>
+			      <label>Data Fim</label>
+			      <input name="dataFim" ng-model="currentEntity.dataFim" ui-date="dateOptions">
+			      <div ng-messages="formCompromisso.dataFim.$error">
+                  	  <div ng-message="required">
+                          Campo obrigatório.
+                      </div>
+                  </div>
+			    </md-input-container>
+			    <md-input-container>
+			    	<label>Hora</label>
+			    	<input ng-model="currentEntity.dataFim" type="time">
+			    </md-input-container>
+		    </md-content>
+		    
+		    <md-content>
+			    <md-select placeholder="Frequência" ng-model="currentEntity.frequencia">
+				    <md-option value="UMA_VEZ">Uma vez</md-option>
+				    <md-option value="DIARIAMENTE">Diariamente</md-option>
+				    <md-option value="SEMANALMENTE">Semanalmente</md-option>
+				    <md-option value="MENSALMENTE">Mensalmente</md-option>
+				    <md-option value="ANUALMENTE">Anualmente</md-option>
+			  	</md-select>
+			  	
+			    <md-select placeholder="Status" ng-model="currentEntity.status">
+				    <md-option value="DISPONIVEL">Disponível</md-option>
+				    <md-option value="OCUPADO">Ocupado</md-option>
+			  	</md-select>
+			  	
+			    <md-select placeholder="Categoria de compromisso" ng-model="currentEntity.categoriaCompromisso">
+				    <md-option ng-repeat="categoria in listaCategorias" ng-value="categoria">{{categoria.descricao}}</md-option>
+			  	</md-select>
+			  	
+			    <md-select placeholder="Tipo de compromisso" ng-model="currentEntity.tipoCompromisso">
+				    <md-option ng-repeat="tipo in listaTipos" ng-value="tipo">{{tipo.descricao}}</md-option>
+			  	</md-select>
+			  	
+		  	</md-content>
+	    
+		</md-content>
+		
+		<md-button ng-click="insertCompromisso()" class="md-raised md-primary" ng-if="currentState == 'agenda.inserir'">SALVAR</md-button>
+		<md-button ng-click="updateCompromisso()" class="md-raised md-primary" ng-if="currentState == 'agenda.alterar'">ATUALIZAR</md-button>
+		<md-button ng-click="removeCompromisso()" class="md-raised md-primary" 
+		ng-if="currentState == 'agenda.alterar'">EXCLUIR</md-button>
+		<md-button ui-sref="agenda.listar" class="md-raised">CANCELAR</md-button>
+		
+	</form>
+	
+</html>

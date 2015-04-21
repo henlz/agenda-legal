@@ -1,0 +1,61 @@
+.md-toolbar-nav-top {
+    font-size: 16px;
+    min-height: 20px;
+    height: 54px;
+    padding-left: 119px;
+    background-color: #004ea1!important;
+}
+
+.md-toolbar-main {
+    min-height: 20px!important;
+    height: 78px!important;
+    background-color: #004ea1!important;
+    padding-top: 7px!important;
+}
+
+.grid-header {
+    border-bottom: 1px solid lightgray;
+    height: 77px;
+}
+
+.grid-column-header {
+    height: 100%;
+    float: left;
+    padding-top: 33px;
+    color: #6c6c6c;
+    cursor: pointer;
+}
+
+.grid-column-header.highlighted {
+    font-weight: bold;
+}
+
+.grid-row {
+    width: 100%;
+    height: 70px;
+}
+
+.grid-body .grid-row-item {
+    float: left;
+    height: 70px;
+    padding-top: 27px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.grid-add-button {
+    position: absolute;
+    top: 101px;
+    left: 41px;
+    background: orange;
+    background-color: #ff5252!important;
+}
+
+.limpar-selecao {
+    text-decoration: underline;
+    color: #9292ad;
+    cursor: pointer;
+    margin-left: 8px;
+}
