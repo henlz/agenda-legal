@@ -1,19 +1,23 @@
 package br.udc.engenharia.agenda.domain.entity.account;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import org.directwebremoting.annotations.DataTransferObject;
-import org.hibernate.envers.Audited;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
@@ -28,11 +32,11 @@ import br.udc.engenharia.agenda.domain.entity.AbstractEntity;
  * @since 02/06/2014
  * @version 1.0
  * @category
+ 
  */
 @Entity
-@Audited
 @Table(name = "\"user\"")
-@DataTransferObject(javascript = "User")
+@DataTransferObject
 public class User extends AbstractEntity implements Serializable, UserDetails
 {
 	/**
@@ -77,6 +81,12 @@ public class User extends AbstractEntity implements Serializable, UserDetails
 	@Column(nullable = false)
 	@Enumerated(EnumType.ORDINAL)
 	private UserRole role;
+
+	/**
+	 * 
+	 */
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	private List<Contato> contatos = new ArrayList<Contato>();
 
 	/*-------------------------------------------------------------------
 	 * 		 					CONSTRUCTORS
@@ -126,7 +136,7 @@ public class User extends AbstractEntity implements Serializable, UserDetails
 	 * 
 	 * @param id
 	 */
-	public User( Long id, String name, String email, boolean enabled, UserRole role, String password )
+	public User( Long id, String name, String email, boolean enabled, UserRole role, String password, List<Contato> contatos )
 	{
 		super( id );
 		this.email = email;
@@ -134,6 +144,7 @@ public class User extends AbstractEntity implements Serializable, UserDetails
 		this.enabled = enabled;
 		this.password = password;
 		this.role = role;
+		this.contatos = contatos;
 	}
 
 	/*-------------------------------------------------------------------
@@ -312,4 +323,22 @@ public class User extends AbstractEntity implements Serializable, UserDetails
 	{
 		this.password = password;
 	}
+
+	/**
+	 * @return the contatos
+	 */
+	public List<Contato> getContatos()
+	{
+		return contatos;
+	}
+
+	/**
+	 * @param contatos the contatos to set
+	 */
+	public void setContatos( List<Contato> contatos )
+	{
+		this.contatos = contatos;
+	}
+	
+	
 }

@@ -1,0 +1,48 @@
+<md-dialog aria-label="Mango (Fruit)">
+    <md-content>
+
+        <h2>{{ modoAlteracao ? 'Alterar' : 'Novo' }} Contato</h2>
+
+        <form name="estrategiaForm" novalidate="true">
+            <md-input-container>
+                <label>Descrição</label>
+                <input name="descricao" ng-model="entidade.descricao" required>
+                <div ng-messages="estrategiaForm.descricao.$error">
+                    <div ng-message="required">
+                        Campo obrigatório.
+                    </div>
+                </div>
+            </md-input-container>
+            <md-input-container>
+                <label>Telefone</label>
+                <input name="telefone" ng-model="entidade.telefone" required>
+                <div ng-messages="estrategiaForm.telefone.$error">
+                    <div ng-message="required">
+                        Campo obrigatório.
+                    </div>
+                </div>
+            </md-input-container>
+            <md-input-container>
+                <label>Email</label>
+                <input type="email" name="email" ng-model="entidade.email" required>
+                <div ng-messages="estrategiaForm.email.$error">
+                    <div ng-message="required">
+                        Campo obrigatório.
+                    </div>
+                </div>
+            </md-input-container>
+
+            
+
+            <div class="md-actions" layout="row">
+                <md-button ng-click="cancelar()">
+                    Cancelar
+                </md-button>
+                <md-button ng-click="salvar()" class="md-primary">
+                    Salvar
+                </md-button>
+            </div>
+        </form>
+
+    </md-content>
+</md-dialog>

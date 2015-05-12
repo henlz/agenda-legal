@@ -1,14 +1,22 @@
 package br.udc.engenharia.agenda.domain.service;
 
+import java.util.List;
+
 import org.directwebremoting.annotations.RemoteProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.dao.SaltSource;
 import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import br.udc.engenharia.agenda.domain.entity.StatusSolicitacaoContato;
+import br.udc.engenharia.agenda.domain.entity.account.Contato;
+import br.udc.engenharia.agenda.domain.entity.account.ContatoUsuario;
 import br.udc.engenharia.agenda.domain.entity.account.User;
+import br.udc.engenharia.agenda.domain.repository.IContatoRepository;
+import br.udc.engenharia.agenda.domain.repository.IContatoUsuarioRepository;
 import br.udc.engenharia.agenda.domain.repository.account.IUserRepository;
 
 /**
@@ -42,6 +50,18 @@ public class AccountService
 
 	/**
 	 * 
+	 */
+	@Autowired
+	private IContatoRepository contatoRepository;
+
+	/**
+	 * 
+	 */
+	@Autowired
+	private IContatoUsuarioRepository contatoUsuarioRepository;
+
+	/**
+	 * 
 	 * @param cliente
 	 * @return
 	 */
@@ -55,5 +75,144 @@ public class AccountService
 		user.setPassword( encodedPassword );
 
 		return this.userRepository.save( user );
+	}
+
+	/**
+	 * 
+	 * @param user
+	 * @return
+	 */
+	public User updateUser( User user )
+	{
+		return this.userRepository.save( user );
+	}
+
+	/**
+	 * 
+	 * @param id
+	 * @param contatos
+	 * @return
+	 */
+	public User insertContactToUser( Long id, Contato contato )
+	{
+		User user = this.userRepository.findOne( id );
+		user.getContatos().add( contato );
+		return this.userRepository.save( user );
+	}
+
+	/**
+	 * 
+	 * @param id
+	 * @param contatos
+	 * @return
+	 */
+	public User updateContactToUser( Long id, Contato contato )
+	{
+		this.contatoRepository.save( contato );
+
+		User user = this.userRepository.findOne( id );
+		return this.userRepository.save( user );
+	}
+
+	/**
+	 * 
+	 */
+	public void removeContactFromUser( Long id, Contato contato )
+	{
+		User user = this.userRepository.findOne( id );
+		user.getContatos().remove( contato );
+		this.userRepository.save( user );
+		this.contatoRepository.delete( contato );
+	}
+
+	/**
+	 * 
+	 * @param filters
+	 * @return
+	 */
+	private User findUser( String filters )
+	{
+		User user = this.userRepository.findByName( filters );
+
+		if ( user != null )
+		{
+			return user;
+		}
+
+		user = this.userRepository.findByEmail( filters );
+
+		if ( user != null )
+		{
+			return user;
+		}
+
+		return null;
+	}
+
+	/**
+	 * 
+	 * @param userInput
+	 * @return
+	 * @throws Exception
+	 */
+	public ContatoUsuario sendFriendRequest( String userInput ) throws Exception
+	{
+		User user = this.findUser( userInput );
+
+		if ( user != null )
+		{
+			User usuarioLogado = ( User ) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+			ContatoUsuario contatoUsuario = new ContatoUsuario( null, StatusSolicitacaoContato.PENDENTE, usuarioLogado, user );
+			return this.contatoUsuarioRepository.save( contatoUsuario );
+		}
+		else
+		{
+			throw new Exception( "Usuario não encontrado!" );
+		}
+	}
+
+	/**
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public ContatoUsuario acceptFriendRequest( Long id )
+	{
+		Assert.notNull( id );
+		ContatoUsuario contatoUsuario = this.contatoUsuarioRepository.findOne( id );
+		contatoUsuario.setStatus( StatusSolicitacaoContato.ACEITA );
+		return this.contatoUsuarioRepository.save( contatoUsuario );
+	}
+
+	/**
+	 * 
+	 * @param userContactId
+	 */
+	public void removeFriend( Long userContactId )
+	{
+		this.contatoUsuarioRepository.delete( userContactId );
+	}
+
+	/**
+	 * 
+	 * @param usuario
+	 * @return
+	 */
+	public List<ContatoUsuario> getFriends()
+	{
+		User usuarioLogado = ( User ) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		return this.contatoUsuarioRepository.listActiveByUser( usuarioLogado.getId() );
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public User getCurrentUser()
+	{
+		User usuario = ( User ) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		usuario = this.userRepository.findOne( usuario.getId() );
+		return usuario;
 	}
 }

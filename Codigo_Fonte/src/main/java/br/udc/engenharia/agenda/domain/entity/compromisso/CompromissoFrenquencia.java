@@ -6,7 +6,7 @@ import org.directwebremoting.annotations.DataTransferObject;
  * @author Henrique L. Zago
  *
  */
-@DataTransferObject(type = "enum", javascript = "CompromissoFrenquencia")
+@DataTransferObject(type = "enum")
 public enum CompromissoFrenquencia
 {
 

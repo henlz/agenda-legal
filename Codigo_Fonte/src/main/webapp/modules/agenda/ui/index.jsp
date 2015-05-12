@@ -10,32 +10,33 @@
 
 	<head>
 		<title>Agenda Legal</title>
-		
-		
+
+
 		<meta charset="UTF-8">
 		<!-- Styles -->
 		<jsp:include page="/modules/default-styles.jsp"/>
 
 		<!-- EITS Bottom Sheet -->
 		<link rel="stylesheet" type="text/css" href="./static/js/eits-bottomsheet/eits-bottomsheet.css">
-		
+
 		<!-- Scripts -->
 		<jsp:include page="/modules/default-scripts.jsp"/>
-		
-		<!-- Main --> 
+
+		<!-- Main -->
 		<script type="text/javascript" src="./modules/agenda/agenda-main.js?v=${version}"/></script>
 
 		<!-- Custom Directive -->
 		<script type="text/javascript" src="./static/js/eits-bottomsheet/eits-bottomsheet.js?v=${version}"></script>
-		
+
 		<!-- Controllers -->
 		<script type="text/javascript" src="./modules/abstract-crud-controller.js?v=${version}"></script>
 	  	<script type="text/javascript" src="./modules/agenda/controllers/calendario-controller.js?v=${version}"></script>
 	  	<script type="text/javascript" src="./modules/agenda/controllers/categoria-compromisso-controller.js?v=${version}"></script>
 	  	<script type="text/javascript" src="./modules/agenda/controllers/tipo-compromisso-controller.js?v=${version}"></script>
+	  	<script type="text/javascript" src="./modules/agenda/controllers/contatos-controller.js?v=${version}"></script>
 
 	</head>
-	
+
 	<body>
 
 		<md-toolbar class="md-tall">
@@ -44,9 +45,11 @@
 			</h2>
 
 			<section layout="row" layout-sm="column">
-		      <md-button ui-sref="agenda.listar">Calendário</md-button>
-		      <md-button ui-sref="categoria-compromisso.listar">Categoria de compromisso</md-button>
-		      <md-button ui-sref="tipo-compromisso.listar">Tipo de compromisso</md-button>
+		        <md-button ui-sref="agenda.listar">Calendário</md-button>
+		        <md-button ui-sref="categoria-compromisso.listar">Categoria de compromisso</md-button>
+                <md-button ui-sref="tipo-compromisso.listar">Tipo de compromisso</md-button>
+                <md-button ui-sref="contatos.listar">Contatos</md-button>
+				<md-button><a href="logout" > Logout</a></md-button>
 		    </section>
 		</md-toolbar>
 

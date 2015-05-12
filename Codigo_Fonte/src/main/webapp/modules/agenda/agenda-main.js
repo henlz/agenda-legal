@@ -53,6 +53,17 @@
 		}).state('tipo-compromisso.inserir', {
 			url: "/inserir"
 		});
+		
+		// Contatos
+		$stateProvider.state('contatos',{
+			url : "/contatos",
+			controller : 'ContatosController',
+			templateUrl : "./modules/agenda/ui/contatos/contatos-view.jsp"
+		}).state('contatos.listar', {
+			url: "/listar"
+		}).state('contatos.inserir', {
+			url: "/inserir"
+		});
 
 	});
 

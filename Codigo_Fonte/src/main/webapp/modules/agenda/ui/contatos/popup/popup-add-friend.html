@@ -1,0 +1,28 @@
+<md-dialog aria-label="Mango (Fruit)">
+    <md-content>
+
+        <h2>Adicionar amigo</h2>
+
+        <form name="estrategiaForm" novalidate="true">
+            <md-input-container>
+                <label>Amigo</label>
+                <input name="descricao" ng-model="campo" required>
+                <div ng-messages="estrategiaForm.descricao.$error">
+                    <div ng-message="required">
+                        Campo obrigatório.
+                    </div>
+                </div>
+            </md-input-container>
+           
+            <div class="md-actions" layout="row">
+                <md-button ng-click="enviar()" class="md-primary">
+                    Cancelar
+                </md-button>
+                <md-button ng-click="enviar()" class="md-primary">
+                    Mandar pedido de amizade
+                </md-button>
+            </div>
+        </form>
+
+    </md-content>
+</md-dialog>

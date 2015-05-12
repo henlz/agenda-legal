@@ -22,7 +22,7 @@ public interface ICompromissoRepository extends JpaRepository<Compromisso, Long>
 	 * @param pageable
 	 * @return
 	 */
-	@Query(value="SELECT new Compromisso( compromisso.id, compromisso.titulo, compromisso.descricao, compromisso.observacoes, compromisso.dataInicio, compromisso.dataFim, compromisso.frequencia, compromisso.status, compromisso.usuario ) " +
+	@Query(value="SELECT new Compromisso( compromisso.id, compromisso.titulo, compromisso.descricao, compromisso.observacoes, compromisso.dataInicio, compromisso.dataFim, compromisso.frequencia, compromisso.status, compromisso.usuario, compromisso.tipoCompromisso, compromisso.categoriaCompromisso ) " +
 				   "FROM Compromisso compromisso " +
 				  "WHERE  (compromisso.usuario.id = CAST(:userId AS int))" )
 	public List<Compromisso> listByFilters( @Param("userId") Long userId );

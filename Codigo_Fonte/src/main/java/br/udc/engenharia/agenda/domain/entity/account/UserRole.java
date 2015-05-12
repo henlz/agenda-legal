@@ -8,7 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
  * @since 02/06/2014
  * @version 1.0
  */
-@DataTransferObject(type = "enum", javascript = "UserRole")
+@DataTransferObject(type = "enum")
 public enum UserRole implements GrantedAuthority
 {
 	/*-------------------------------------------------------------------

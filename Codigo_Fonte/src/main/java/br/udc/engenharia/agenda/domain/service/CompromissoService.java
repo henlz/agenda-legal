@@ -76,6 +76,11 @@ public class CompromissoService
 		return this.compromissoRepository.save( compromisso );
 	}
 
+	/**
+	 * 
+	 * @param compromisso
+	 * @return
+	 */
 	public Compromisso updateCompromisso( Compromisso compromisso )
 	{
 		Assert.notNull( compromisso );

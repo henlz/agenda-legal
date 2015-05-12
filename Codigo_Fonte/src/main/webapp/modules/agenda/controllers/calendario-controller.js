@@ -214,6 +214,8 @@
     	$scope.insertCompromisso = function(){
     		
     		if ($scope.validaForm) {
+    			delete $scope.currentEntity.categoriaCompromisso.usuario;
+    			delete $scope.currentEntity.tipoCompromisso.usuario;
 	    		compromissoService.insertCompromisso($scope.currentEntity, {
 	    			callback: function(result){
 	    				$state.go($scope.LIST_STATE, {});
@@ -228,7 +230,8 @@
     	$scope.updateCompromisso = function(){
     		
     		if ($scope.validaForm) {
-    			
+    			delete $scope.currentEntity.categoriaCompromisso.usuario;
+    			delete $scope.currentEntity.tipoCompromisso.usuario;
     			compromissoService.updateCompromisso($scope.currentEntity, {
     				callback: function(result){
     					$state.go($scope.LIST_STATE, {});

@@ -71,7 +71,7 @@
 				<!-- Database -->
 				<mvn.jdbc.jdbcUrl>jdbc:postgresql://127.0.0.1/agenda</mvn.jdbc.jdbcUrl>
 				<mvn.jdbc.username>agenda</mvn.jdbc.username>
-				<mvn.jdbc.password>agenda</mvn.jdbc.password>
+				<mvn.jdbc.password>agendaa</mvn.jdbc.password>
 
 				<!-- Hibernate -->
 				<mvn.hibernate.hbm2ddl>update</mvn.hibernate.hbm2ddl>
@@ -268,6 +268,10 @@
 			<groupId>org.scala-lang</groupId>
 			<artifactId>scala-library</artifactId>
 			<version>2.10.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-social-linkedin</artifactId>
 		</dependency>
 	</dependencies>
 

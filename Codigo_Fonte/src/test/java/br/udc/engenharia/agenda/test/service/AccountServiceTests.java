@@ -27,9 +27,9 @@ public class AccountServiceTests extends AbstractIntegrationTests
 	 * @throws IOException
 	 */
 	@Test
-	public void inserUser() throws IOException
+	public void insertUser() throws IOException
 	{
-		User user = new User( 1L, "Administrador de Sistemas", "admin@agendatop.com.br", true, UserRole.ADMINISTRATOR, "admin" );
+		User user = new User( 1L, "Usuário Teste", "usuario@agendatop.com.br", true, UserRole.USER, "user", null );
 		this.accountService.insertUser( user );
 	}
 }

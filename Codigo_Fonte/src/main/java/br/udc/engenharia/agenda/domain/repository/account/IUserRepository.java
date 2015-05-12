@@ -19,10 +19,17 @@ import br.udc.engenharia.agenda.domain.entity.account.User;
 public interface IUserRepository extends JpaRepository<User, Long>, UserDetailsService
 {
 	/**
-	 * @param username
+	 * @param email
 	 * @return
 	 */
 	public User findByEmail(String email);
+	
+	
+	/**
+	 * @param name
+	 * @return
+	 */
+	public User findByName(String name);
 	
 	/**
 	 * @param filter

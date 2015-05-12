@@ -86,14 +86,14 @@ public class Compromisso extends AbstractEntity implements Serializable
 	/**
 	 * 
 	 */
-//	@Column
-//	private CategoriaCompromisso categoriaCompromisso;
-//
-//	/**
-//	 * 
-//	 */
-//	@Column
-//	private TipoCompromisso tipoCompromisso;
+	@ManyToOne
+	private CategoriaCompromisso categoriaCompromisso;
+
+	/**
+	 * 
+	 */
+	@ManyToOne
+	private TipoCompromisso tipoCompromisso;
 
 	/**
 	 * 
@@ -149,7 +149,7 @@ public class Compromisso extends AbstractEntity implements Serializable
 	 * @param frequencia
 	 * @param status
 	 */
-	public Compromisso( Long id, String titulo, String descricao, String observacoes, Date dataInicio, Date dataFim, CompromissoFrenquencia frequencia, Status status, User usuario )
+	public Compromisso( Long id, String titulo, String descricao, String observacoes, Date dataInicio, Date dataFim, CompromissoFrenquencia frequencia, Status status, User usuario, TipoCompromisso tipoCompromisso, CategoriaCompromisso categoriaCompromisso )
 	{
 		super( id );
 		this.titulo = titulo;
@@ -160,8 +160,8 @@ public class Compromisso extends AbstractEntity implements Serializable
 		this.frequencia = frequencia;
 		this.status = status;
 		this.usuario = usuario;
-//		this.tipoCompromisso = tipoCompromisso;
-//		this.categoriaCompromisso = categoriaCompromisso;
+		this.tipoCompromisso = tipoCompromisso;
+		this.categoriaCompromisso = categoriaCompromisso;
 	}
 
 	/*
@@ -382,37 +382,37 @@ public class Compromisso extends AbstractEntity implements Serializable
 		this.agendas = agendas;
 	}
 
-//	/**
-//	 * @return the categoriaCompromisso
-//	 */
-//	public CategoriaCompromisso getCategoriaCompromisso()
-//	{
-//		return categoriaCompromisso;
-//	}
-//
-//	/**
-//	 * @param categoriaCompromisso the categoriaCompromisso to set
-//	 */
-//	public void setCategoriaCompromisso( CategoriaCompromisso categoriaCompromisso )
-//	{
-//		this.categoriaCompromisso = categoriaCompromisso;
-//	}
-//
-//	/**
-//	 * @return the tipoCompromisso
-//	 */
-//	public TipoCompromisso getTipoCompromisso()
-//	{
-//		return tipoCompromisso;
-//	}
-//
-//	/**
-//	 * @param tipoCompromisso the tipoCompromisso to set
-//	 */
-//	public void setTipoCompromisso( TipoCompromisso tipoCompromisso )
-//	{
-//		this.tipoCompromisso = tipoCompromisso;
-//	}
+	/**
+	 * @return the categoriaCompromisso
+	 */
+	public CategoriaCompromisso getCategoriaCompromisso()
+	{
+		return categoriaCompromisso;
+	}
+
+	/**
+	 * @param categoriaCompromisso the categoriaCompromisso to set
+	 */
+	public void setCategoriaCompromisso( CategoriaCompromisso categoriaCompromisso )
+	{
+		this.categoriaCompromisso = categoriaCompromisso;
+	}
+
+	/**
+	 * @return the tipoCompromisso
+	 */
+	public TipoCompromisso getTipoCompromisso()
+	{
+		return tipoCompromisso;
+	}
+
+	/**
+	 * @param tipoCompromisso the tipoCompromisso to set
+	 */
+	public void setTipoCompromisso( TipoCompromisso tipoCompromisso )
+	{
+		this.tipoCompromisso = tipoCompromisso;
+	}
 
 	
 }
