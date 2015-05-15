@@ -1,5 +1,6 @@
 package br.udc.engenharia.agenda.domain.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.directwebremoting.annotations.RemoteProxy;
@@ -62,6 +63,12 @@ public class AccountService
 
 	/**
 	 * 
+	 */
+	@Autowired
+	private LoggingService loggingService;
+
+	/**
+	 * 
 	 * @param cliente
 	 * @return
 	 */
@@ -97,6 +104,7 @@ public class AccountService
 	{
 		User user = this.userRepository.findOne( id );
 		user.getContatos().add( contato );
+		this.loggingService.recordTextFile( user.getName(), "Usuário " + user.getName() + " adicionou o contato " + contato.getDescricao() );
 		return this.userRepository.save( user );
 	}
 
@@ -123,6 +131,7 @@ public class AccountService
 		user.getContatos().remove( contato );
 		this.userRepository.save( user );
 		this.contatoRepository.delete( contato );
+		this.loggingService.recordTextFile( user.getName(), "Usuário " + user.getName() + " adicionou o contato " + contato.getDescricao() );
 	}
 
 	/**
@@ -164,6 +173,7 @@ public class AccountService
 			User usuarioLogado = ( User ) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
 			ContatoUsuario contatoUsuario = new ContatoUsuario( null, StatusSolicitacaoContato.PENDENTE, usuarioLogado, user );
+			this.loggingService.recordTextFile( usuarioLogado.getName(), "Usuário " + usuarioLogado.getName() + " enviou uma solicitação de contato para " + user.getName() );
 			return this.contatoUsuarioRepository.save( contatoUsuario );
 		}
 		else
@@ -182,6 +192,7 @@ public class AccountService
 		Assert.notNull( id );
 		ContatoUsuario contatoUsuario = this.contatoUsuarioRepository.findOne( id );
 		contatoUsuario.setStatus( StatusSolicitacaoContato.ACEITA );
+		this.loggingService.recordTextFile( contatoUsuario.getUsuarioDestino().getName(), "Usuário " + contatoUsuario.getUsuarioDestino().getName() + " aceitou a solicitação de contato do usuário " + contatoUsuario.getUsuarioOrigem().getName() );
 		return this.contatoUsuarioRepository.save( contatoUsuario );
 	}
 
@@ -214,5 +225,31 @@ public class AccountService
 		User usuario = ( User ) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		usuario = this.userRepository.findOne( usuario.getId() );
 		return usuario;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public List<User> getFriendsList()
+	{
+		User usuarioLogado = ( User ) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		List<ContatoUsuario> contatos = this.contatoUsuarioRepository.listByUser( usuarioLogado.getId(), StatusSolicitacaoContato.ACEITA );
+
+		List<User> friends = new ArrayList<User>();
+
+		for ( ContatoUsuario contato : contatos )
+		{
+			if ( usuarioLogado.getId().equals( contato.getUsuarioDestino().getId() ) )
+			{
+				friends.add( contato.getUsuarioOrigem() );
+			}
+			else
+			{
+				friends.add( contato.getUsuarioDestino() );
+			}
+		}
+		
+		return friends;
 	}
 }

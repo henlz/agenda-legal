@@ -48,7 +48,6 @@
 		<dwr:convert type="bean" class="java.lang.StackTraceElement"/>
 		<dwr:convert type="exception" class="java.lang.Exception"/>
 		
-		<dwr:convert type="bean" class="br.udc.engenharia.agenda.infrastructure.jcr.MetaFile" javascript="MetaFile"/>
 		<dwr:convert type="bean" class="org.joda.time.DateTime" javascript="DateTime"/>
 		<dwr:convert type="bean" class="org.springframework.data.domain.PageImpl" javascript="PageImpl"/>
 		<dwr:convert type="bean" class="org.springframework.data.domain.PageRequest" javascript="PageRequest"/>
@@ -90,19 +89,6 @@
 	</security:authentication-manager>
 	
 	<!-- ============================ INFRASTRUCTURE ============================= -->
-    <!-- 
-        JCR ModeShape - MetaFile
-    -->
-    <bean id="metaFileRepository"
-        class="br.udc.engenharia.agenda.infrastructure.jcr.MetaFileRepository"/>
-         
-    <bean id="modeShapeRepositoryFactory" class="br.udc.engenharia.agenda.infrastructure.jcr.modeshape.ModeShapeRepositoryFactory">
-       <property name="configuration" value="classpath:jcr-modeshape-config.json"/>
-    </bean>
-     
-    <bean id="modeShapeSessionFactory"
-        class="br.udc.engenharia.agenda.infrastructure.jcr.modeshape.ModeShapeSessionFactory"/>
-        
 	<!--  
 		DATA SOURCE
 		Global DataSource Configuration with a Proxy for a target DataSource,

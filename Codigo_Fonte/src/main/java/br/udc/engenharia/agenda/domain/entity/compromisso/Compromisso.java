@@ -100,6 +100,12 @@ public class Compromisso extends AbstractEntity implements Serializable
 	 */
 	@Transient
 	private List<Agenda> agendas;
+	
+	/**
+	 * 
+	 */
+	@Transient
+	private Boolean shared;
 
 	/**
 	 * 
@@ -116,6 +122,16 @@ public class Compromisso extends AbstractEntity implements Serializable
 	public Compromisso( Long id )
 	{
 		super( id );
+	}
+	
+	/**
+	 * 
+	 * @param id
+	 */
+	public Compromisso( Long id, String titulo )
+	{
+		super( id );
+		this.titulo = titulo;
 	}
 
 	/**
@@ -412,6 +428,22 @@ public class Compromisso extends AbstractEntity implements Serializable
 	public void setTipoCompromisso( TipoCompromisso tipoCompromisso )
 	{
 		this.tipoCompromisso = tipoCompromisso;
+	}
+
+	/**
+	 * @return the shared
+	 */
+	public Boolean getShared()
+	{
+		return shared;
+	}
+
+	/**
+	 * @param shared the shared to set
+	 */
+	public void setShared( Boolean shared )
+	{
+		this.shared = shared;
 	}
 
 	

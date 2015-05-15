@@ -1,6 +1,3 @@
-/**
- * 
- */
 package br.udc.engenharia.agenda.domain.entity;
 
 import org.directwebremoting.annotations.DataTransferObject;

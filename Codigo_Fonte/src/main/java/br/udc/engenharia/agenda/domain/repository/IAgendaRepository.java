@@ -26,9 +26,8 @@ public interface IAgendaRepository extends JpaRepository<Agenda, Long>
 	 */
 	@Query(value="SELECT new Agenda( agenda.id, agenda.dataInicio, agenda.dataFim, agenda.usuario, agenda.compromisso ) " +
 			   "FROM Agenda agenda " +
-			  "WHERE  ( ( agenda.usuario.id = :userId ) " +
-					"AND ( agenda.compromisso.id = :compromissoId ) )" )
-	public List<Agenda> listByCompromisso( @Param("compromissoId") Long compromissoId, @Param("userId") Long userId);
+			  "WHERE  ( agenda.compromisso.id = :compromissoId ) " )
+	public List<Agenda> listByCompromisso( @Param("compromissoId") Long compromissoId);
 	
 	/**
 	 * 

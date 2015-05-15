@@ -96,7 +96,7 @@
                     $scope.currentState = $scope.DETAIL_STATE;
                     $state.go($scope.DETAIL_STATE, {id: id});
                     $scope.$apply();
-     
+
                     $scope.listCategoriasCompromissos();
                     $scope.listTiposCompromissos();
                 },
@@ -162,6 +162,7 @@
 						for (var x = 0; x < result[i].agendas.length; x++) {
 							eventsArray.push({
 								id: result[i].id,
+                                shared: result[i].shared,
 								title: result[i].titulo,
 								start: result[i].agendas[x].dataInicio,
 								end: result[i].agendas[x].dataFim,
@@ -273,32 +274,129 @@
 	    			})
 	    		}
             });
-    	}
+    	};
     	
     	$scope.renderCalendar = function(events) {
-    		$(calendarElement).fullCalendar({
+    		angular.element(calendarElement).fullCalendar({
 				events: events,
 				local: 'America/Brasil',
 				aspectRatio: 3,
 				displayEventEnd: true,
 				lang: 'pt-br',
 				eventRender: function(event, element) { 
-//				    element.find('.fc-content').append("<br/><md-tooltip>"+ event.description +"</md-tooltip>");
+                    if (event.shared == true) {
+                        element.find('.fc-content').append(" (compartilhado)");
+                    }
+				    
 //				    $compile(element)($scope)
 				},
 				eventClick: function(calEvent, jsEvent, view) {
 					$state.go($scope.DETAIL_STATE, {id: calEvent.id});
 			    }
 			});
-    	}
+    	};
     	
     	$scope.dateOptions = {
 	        changeYear: true,
 	        changeMonth: true,
 	        yearRange: '-0:2050'
 	    };
+        
+        $scope.showSharePopup = function(ev) {
+            $mdDialog.show({
+                    controller: 'ShareDialogController',
+                    templateUrl: './modules/agenda/ui/calendario/popup/popup-compartilhar.html',
+                    locals: {
+                        compromisso: $scope.currentEntity
+                    },
+                    targetEvent: ev
+                })
+                    .then(function (result) {
+                        
+                    }, function () {
+                    });
+        };
+        
+        $scope.removeSharedCompromisso = function() {
+            var confirm = $mdDialog.confirm()
+            .title('Cancelar de compartilhamento')
+            .content('Tem certeza que deseja excluir o compromisso compartilhado? Esta operação não poderá ser desfeita.')
+            .ariaLabel('Cancelar de compartilhamento')
+            .ok('Sim!')
+            .cancel('Cancelar')
+            .targetEvent();
+
+            $mdDialog.show(confirm).then(function () {
+    		
+	    		if ($scope.currentEntity.id != null) {
+	    			compromissoService.removeSharedCompromisso($scope.currentEntity, {
+	    				callback: function(result){
+	    					$state.go($scope.LIST_STATE, {});
+	    					
+	    					$mdToast.show($mdToast.simple()
+		    		                .content('Compromisso excluído com sucesso!')
+		    		                .action('Fechar')
+		    		                .highlightAction(false)
+		    		                .position('top')).then(function() {
+		    		            });
+	    				},
+	    				errorHandler: function(message, error){
+	    					$log.error("Erro ao excluir: ",message);
+	    				}
+	    			})
+	    		}
+            });
+        }
 
     }
-);
+).controller('ShareDialogController', function ($scope, $mdDialog, $importService, $mdToast, compromisso) {
+            
+            $importService("compromissoService");
+            $importService("accountService");
+            
+            $scope.campo = null;
+            
+            $scope.friendsGridOptions = {
+                
+            }
+            
+            accountService.getFriendsList( {
+                callback: function(result) {
+                    $scope.friends = result;
+                },
+                errorHandler: function(message, error){
+                    console.log(message);
+                }
+            });
+
+            $scope.enviar = function (friend) {
+                
+                compromissoService.shareCompromissoWithUser(compromisso, friend, {
+                    callback: function(result) {
+                        $mdDialog.hide(true);
+                        $mdToast.show($mdToast.simple()
+                            .content("Compromisso compartilhado!")
+                            .action('Fechar')
+                            .highlightAction(false)
+                            .position('top')).then(function () {
+                        });
+                    },
+                    errorHandler: function(message, error){
+                        $mdToast.show($mdToast.simple()
+                            .content(message)
+                            .action('Fechar')
+                            .highlightAction(false)
+                            .position('top')).then(function () {
+                        });
+                    }
+                });
+                    
+                    
+            };
+            
+            $scope.cancelar = function () {
+                $mdDialog.cancel();
+            };
+        });
 
 }(window.angular));

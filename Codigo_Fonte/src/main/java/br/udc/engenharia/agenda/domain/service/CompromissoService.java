@@ -8,19 +8,21 @@ import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import br.udc.engenharia.agenda.application.security.ContextHolder;
 import br.udc.engenharia.agenda.domain.entity.account.User;
 import br.udc.engenharia.agenda.domain.entity.compromisso.Agenda;
 import br.udc.engenharia.agenda.domain.entity.compromisso.CategoriaCompromisso;
+import br.udc.engenharia.agenda.domain.entity.compromisso.CompartilhamentoCompromisso;
 import br.udc.engenharia.agenda.domain.entity.compromisso.Compromisso;
 import br.udc.engenharia.agenda.domain.entity.compromisso.CompromissoFrenquencia;
 import br.udc.engenharia.agenda.domain.entity.compromisso.TipoCompromisso;
 import br.udc.engenharia.agenda.domain.repository.IAgendaRepository;
 import br.udc.engenharia.agenda.domain.repository.ICategoriaCompromissoRepository;
+import br.udc.engenharia.agenda.domain.repository.ICompartilhamentoCompromissoRepository;
 import br.udc.engenharia.agenda.domain.repository.ICompromissoRepository;
 import br.udc.engenharia.agenda.domain.repository.ITipoCompromissoRepository;
 
@@ -60,6 +62,18 @@ public class CompromissoService
 
 	/**
 	 * 
+	 */
+	@Autowired
+	private ICompartilhamentoCompromissoRepository compartilhamentoCompromissoRepository;
+
+	/**
+	 * 
+	 */
+	@Autowired
+	private LoggingService loggingService;
+
+	/**
+	 * 
 	 * @param compromisso
 	 * @return
 	 */
@@ -67,11 +81,13 @@ public class CompromissoService
 	{
 		Assert.notNull( compromisso );
 
-		User usuario = ( User ) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		User usuario = ContextHolder.getAuthenticatedUser();
 
 		compromisso.setUsuario( usuario );
 
 		this.arrangeAgenda( compromisso );
+
+		this.loggingService.recordTextFile( usuario.getName(), "Usuário " + usuario.getName() + " cadastrou o compromisso " + compromisso.getTitulo() );
 
 		return this.compromissoRepository.save( compromisso );
 	}
@@ -85,12 +101,14 @@ public class CompromissoService
 	{
 		Assert.notNull( compromisso );
 
-		User usuario = ( User ) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		User usuario = ContextHolder.getAuthenticatedUser();
 
 		compromisso.setUsuario( usuario );
 
 		this.clearAgenda( compromisso );
 		this.arrangeAgenda( compromisso );
+
+		this.loggingService.recordTextFile( usuario.getName(), "Usuário " + usuario.getName() + " atualizou o compromisso " + compromisso.getTitulo() );
 
 		return this.compromissoRepository.save( compromisso );
 	}
@@ -103,13 +121,20 @@ public class CompromissoService
 	 */
 	public List<Compromisso> listCompromissosByFilters( String filter, PageRequest pageable )
 	{
-		Long userId = ( ( User ) SecurityContextHolder.getContext().getAuthentication().getPrincipal() ).getId();
+		Long userId = ContextHolder.getAuthenticatedUser().getId();
 
 		List<Compromisso> compromissos = this.compromissoRepository.listByFilters( userId );
 
+		for ( CompartilhamentoCompromisso compartilhamentoCompromisso : this.compartilhamentoCompromissoRepository.listShared( userId ) )
+		{
+			Compromisso compromisso = compartilhamentoCompromisso.getCompromisso();
+			compromisso.setShared( true );
+			compromissos.add( compromisso );
+		}
+
 		for ( Compromisso compromisso : compromissos )
 		{
-			final List<Agenda> agendas = this.agendaRepository.listByCompromisso( compromisso.getId(), userId );
+			final List<Agenda> agendas = this.agendaRepository.listByCompromisso( compromisso.getId() );
 
 			compromisso.setAgendas( agendas );
 		}
@@ -123,7 +148,7 @@ public class CompromissoService
 	 */
 	private void arrangeAgenda( Compromisso compromisso )
 	{
-		User usuario = ( User ) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		User usuario = ContextHolder.getAuthenticatedUser();
 
 		List<Agenda> agendas = new ArrayList<Agenda>();
 
@@ -209,10 +234,8 @@ public class CompromissoService
 	 */
 	private void clearAgenda( Compromisso compromisso )
 	{
-		User usuario = ( User ) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-		List<Agenda> agendas = this.agendaRepository.listByCompromisso( compromisso.getId(), usuario.getId() );
-
+		Assert.notNull( compromisso, "Compromisso não pode ser nulo!" );
+		List<Agenda> agendas = this.agendaRepository.listByCompromisso( compromisso.getId() );
 		this.agendaRepository.delete( agendas );
 	}
 
@@ -222,10 +245,15 @@ public class CompromissoService
 	 */
 	public void removeCompromisso( Long compromissoId )
 	{
-		List<Agenda> agendas = this.agendaRepository.listByCompromisso( compromissoId, ( ( User ) SecurityContextHolder.getContext().getAuthentication().getPrincipal() ).getId() );
+		User usuario = ContextHolder.getAuthenticatedUser();
+		List<Agenda> agendas = this.agendaRepository.listByCompromisso( compromissoId );
 		this.agendaRepository.delete( agendas );
 
-		this.compromissoRepository.delete( compromissoId );
+		Compromisso compromisso = this.compromissoRepository.findOne( compromissoId );
+
+		this.compromissoRepository.delete( compromisso );
+
+		this.loggingService.recordTextFile( usuario.getName(), "Usuário " + usuario.getName() + " excluíu o compromisso " + compromisso.getTitulo() );
 	}
 
 	/**
@@ -235,7 +263,11 @@ public class CompromissoService
 	 */
 	public TipoCompromisso insertTipoCompromisso( String descricao )
 	{
-		TipoCompromisso tipoCompromisso = new TipoCompromisso( null, descricao, ( User ) SecurityContextHolder.getContext().getAuthentication().getPrincipal() );
+		User usuario = ContextHolder.getAuthenticatedUser();
+
+		TipoCompromisso tipoCompromisso = new TipoCompromisso( null, descricao, usuario );
+
+		this.loggingService.recordTextFile( usuario.getName(), "Usuário " + usuario.getName() + " cadastrou o tipo de compromisso " + tipoCompromisso.getDescricao() );
 
 		return this.tipoCompromissoRepository.save( tipoCompromisso );
 	}
@@ -247,7 +279,11 @@ public class CompromissoService
 	 */
 	public TipoCompromisso updateTipoCompromisso( TipoCompromisso tipoCompromisso )
 	{
-		tipoCompromisso.setUsuario( ( User ) SecurityContextHolder.getContext().getAuthentication().getPrincipal() );
+		User usuario = ContextHolder.getAuthenticatedUser();
+
+		tipoCompromisso.setUsuario( usuario );
+
+		this.loggingService.recordTextFile( usuario.getName(), "Usuário " + usuario.getName() + " atualizou o tipo de compromisso " + tipoCompromisso.getDescricao() );
 
 		return this.tipoCompromissoRepository.save( tipoCompromisso );
 	}
@@ -259,7 +295,11 @@ public class CompromissoService
 	 */
 	public CategoriaCompromisso insertCategoriaCompromisso( String descricao )
 	{
-		CategoriaCompromisso categoriaCompromisso = new CategoriaCompromisso( null, descricao, ( User ) SecurityContextHolder.getContext().getAuthentication().getPrincipal() );
+		User usuario = ContextHolder.getAuthenticatedUser();
+
+		CategoriaCompromisso categoriaCompromisso = new CategoriaCompromisso( null, descricao, usuario );
+
+		this.loggingService.recordTextFile( usuario.getName(), "Usuário " + usuario.getName() + " cadastrou a categoria de compromisso " + descricao );
 
 		return this.categoriaCompromissoRepository.save( categoriaCompromisso );
 	}
@@ -271,7 +311,11 @@ public class CompromissoService
 	 */
 	public CategoriaCompromisso updateCategoriaCompromisso( CategoriaCompromisso categoriaCompromisso )
 	{
-		categoriaCompromisso.setUsuario( ( User ) SecurityContextHolder.getContext().getAuthentication().getPrincipal() );
+		User usuario = ContextHolder.getAuthenticatedUser();
+
+		categoriaCompromisso.setUsuario( usuario );
+
+		this.loggingService.recordTextFile( usuario.getName(), "Usuário " + usuario.getName() + " atualizou a categoria de compromisso " + categoriaCompromisso.getDescricao() );
 
 		return this.categoriaCompromissoRepository.save( categoriaCompromisso );
 	}
@@ -282,7 +326,7 @@ public class CompromissoService
 	 */
 	public List<CategoriaCompromisso> listCategoriasCompromissos()
 	{
-		return this.categoriaCompromissoRepository.listByUser( ( ( User ) SecurityContextHolder.getContext().getAuthentication().getPrincipal() ).getId() );
+		return this.categoriaCompromissoRepository.listByUser( ( ContextHolder.getAuthenticatedUser() ).getId() );
 	}
 
 	/**
@@ -291,7 +335,7 @@ public class CompromissoService
 	 */
 	public List<TipoCompromisso> listTiposCompromissos()
 	{
-		return this.tipoCompromissoRepository.listByUser( ( ( User ) SecurityContextHolder.getContext().getAuthentication().getPrincipal() ).getId() );
+		return this.tipoCompromissoRepository.listByUser( ( ContextHolder.getAuthenticatedUser() ).getId() );
 	}
 
 	/**
@@ -300,7 +344,11 @@ public class CompromissoService
 	 */
 	public void removeCategoriaCompromisso( CategoriaCompromisso categoriaCompromisso )
 	{
+		User usuario = ContextHolder.getAuthenticatedUser();
+
 		this.categoriaCompromissoRepository.delete( categoriaCompromisso );
+
+		this.loggingService.recordTextFile( usuario.getName(), "Usuário " + usuario.getName() + " excluíu a categoria de compromisso " + categoriaCompromisso.getDescricao() );
 	}
 
 	/**
@@ -309,7 +357,12 @@ public class CompromissoService
 	 */
 	public void removeTipoCompromisso( Long tipoCompromissoId )
 	{
-		this.tipoCompromissoRepository.delete( tipoCompromissoId );
+		User usuario = ContextHolder.getAuthenticatedUser();
+
+		TipoCompromisso tipoCompromisso = this.tipoCompromissoRepository.findOne( tipoCompromissoId );
+		this.tipoCompromissoRepository.delete( tipoCompromisso );
+
+		this.loggingService.recordTextFile( usuario.getName(), "Usuário " + usuario.getName() + " excluíu o tipo de compromisso " + tipoCompromisso.getDescricao() );
 	}
 
 	/**
@@ -317,9 +370,57 @@ public class CompromissoService
 	 * @param id
 	 * @return
 	 */
+	@Transactional(readOnly = true)
 	public Compromisso findCompromissoById( Long id )
 	{
-		return this.compromissoRepository.findOne( id );
+		User usuario = ContextHolder.getAuthenticatedUser();
+
+		Compromisso compromisso = this.compromissoRepository.findOne( id );
+		if ( compromisso == null || compromisso.getUsuario().getId() != usuario.getId() )
+		{
+			CompartilhamentoCompromisso compartilhamentoCompromisso = this.compartilhamentoCompromissoRepository.findSharedByCompromisso( id, usuario.getId() );
+			Assert.notNull( compartilhamentoCompromisso );
+			compromisso.setShared( true );
+		}
+
+		return compromisso;
+	}
+
+	/**
+	 * 
+	 * @param compromisso
+	 * @param usuario
+	 */
+	public CompartilhamentoCompromisso shareCompromissoWithUser( Compromisso compromisso, User usuario )
+	{
+		Assert.notNull( compromisso, "Compromisso não pode ser nulo!" );
+		Assert.notNull( usuario, "Usuário não pode ser nulo!" );
+
+		User usuarioLogado = ContextHolder.getAuthenticatedUser();
+
+		CompartilhamentoCompromisso compartilhamentoCompromisso = new CompartilhamentoCompromisso();
+		compartilhamentoCompromisso.setCompromisso( compromisso );
+		compartilhamentoCompromisso.setUsuario( usuario );
+		compartilhamentoCompromisso.setAutor( usuarioLogado );
+
+		this.loggingService.recordTextFile( usuarioLogado.getName(), "Usuário " + usuarioLogado.getName() + " compartilhou um compromisso com " + usuario.getName() );
+
+		return this.compartilhamentoCompromissoRepository.save( compartilhamentoCompromisso );
+	}
+
+	/**
+	 * 
+	 * @param compromisso
+	 */
+	public void removeSharedCompromisso( Compromisso compromisso )
+	{
+		User usuarioLogado = ContextHolder.getAuthenticatedUser();
+		CompartilhamentoCompromisso compartilhamentoCompromisso = this.compartilhamentoCompromissoRepository.findSharedByCompromisso( compromisso.getId(), usuarioLogado.getId() );
+
+		Assert.notNull( compartilhamentoCompromisso, "Nenhum compromisso compartilhado encontrado!" );
+
+		this.compartilhamentoCompromissoRepository.delete( compartilhamentoCompromisso );
+
 	}
 
 }

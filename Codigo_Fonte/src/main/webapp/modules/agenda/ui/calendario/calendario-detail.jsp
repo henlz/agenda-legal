@@ -47,7 +47,7 @@
 			    </md-input-container>
 		    </md-content>
 		    
-		    <md-content>
+		    <md-content layout-align="center center">
 			    <md-select placeholder="Frequência" ng-model="currentEntity.frequencia" disabled>
 				    <md-option value="UMA_VEZ">Uma vez</md-option>
 				    <md-option value="DIARIAMENTE">Diariamente</md-option>
@@ -62,17 +62,19 @@
 			  	</md-select>
 			  	
 			    <md-select placeholder="Categoria de compromisso" ng-model="currentEntity.categoriaCompromisso" disabled>
-				    <md-option ng-repeat="categoria in listaCategorias" value="{{categoria}}">{{categoria.descricao}}</md-option>
+				    <md-option ng-repeat="categoria in listaCategorias" ng-value="categoria" ng-selected="categoria.id == currentEntity.categoriaCompromisso.id">{{::categoria.descricao}}</md-option>
 			  	</md-select>
-			  	
+				  			  	
 			    <md-select placeholder="Tipo de compromisso" ng-model="currentEntity.tipoCompromisso" disabled>
-				    <md-option ng-repeat="tipo in listaTipos" value="{{tipo}}">{{tipo.descricao}}</md-option>
+				    <md-option ng-repeat="tipo in listaTipos" ng-value="tipo" ng-selected="tipo.id == currentEntity.tipoCompromisso.id">{{::tipo.descricao}}</md-option>
 			  	</md-select>
 			  	
 		  	</md-content>
 		</md-content>
-
-		<md-button ui-sref="agenda.alterar({id:currentEntity.id})" class="md-raised">editar</md-button>
+		
+		<md-button ng-if="currentEntity.shared == true" ng-click="removeSharedCompromisso($event)" class="md-accent md-raised">cancelar compartilhamento</md-button>
+		<md-button ng-if="currentEntity.shared != true" ui-sref="agenda.alterar({id:currentEntity.id})" class="md-primary md-raised">editar</md-button>
+		<md-button ng-if="currentEntity.shared != true" ng-click="showSharePopup($event)" class="md-accent md-raised">compartilhar compromisso</md-button>
 		<md-button ui-sref="agenda.listar" class="md-raised">VOLTAR</md-button>
 		
 	</form>

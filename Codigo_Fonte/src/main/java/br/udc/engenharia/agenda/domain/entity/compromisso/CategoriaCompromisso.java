@@ -8,6 +8,7 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
 import org.directwebremoting.annotations.DataTransferObject;
+import org.directwebremoting.annotations.Param;
 
 import br.udc.engenharia.agenda.domain.entity.AbstractEntity;
 import br.udc.engenharia.agenda.domain.entity.account.User;
@@ -18,7 +19,7 @@ import br.udc.engenharia.agenda.domain.entity.account.User;
  *
  */
 @Entity
-@DataTransferObject(javascript = "CategoriaCompromisso")
+@DataTransferObject(javascript = "CategoriaCompromisso", params=@Param(name="exclude", value="usuario"))
 public class CategoriaCompromisso extends AbstractEntity implements Serializable
 {
 	

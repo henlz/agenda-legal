@@ -23,7 +23,7 @@
 		
 		<spring-loaded.version>1.2.1.RELEASE</spring-loaded.version>
 		<hikaricp.version>2.3.2</hikaricp.version>
-		<postgresql.version>9.4-1200-jdbc41</postgresql.version>
+		<postgresql.version>9.3-1103-jdbc41</postgresql.version>
 		<dwr.version>3.0.2-RELEASE</dwr.version>
 		
 		<!-- JCR -->
@@ -55,9 +55,9 @@
         	</activation>
 			<properties>
 				<!-- Database -->
-				<mvn.jdbc.jdbcUrl>jdbc:postgresql://127.0.0.1/agenda</mvn.jdbc.jdbcUrl>
+				<mvn.jdbc.jdbcUrl>jdbc:postgresql://aa1l5jofbd3wun3.czzt7b8qriyh.us-west-2.rds.amazonaws.com:5432/agenda</mvn.jdbc.jdbcUrl>
 				<mvn.jdbc.username>agenda</mvn.jdbc.username>
-				<mvn.jdbc.password>agenda</mvn.jdbc.password>
+				<mvn.jdbc.password>agendaagenda</mvn.jdbc.password>
 
 				<!-- Hibernate -->
 				<mvn.hibernate.hbm2ddl>update</mvn.hibernate.hbm2ddl>
@@ -69,9 +69,9 @@
 			<id>sandbox</id>
 			<properties>
 				<!-- Database -->
-				<mvn.jdbc.jdbcUrl>jdbc:postgresql://127.0.0.1/agenda</mvn.jdbc.jdbcUrl>
+				<mvn.jdbc.jdbcUrl>jdbc:postgresql://aa1l5jofbd3wun3.czzt7b8qriyh.us-west-2.rds.amazonaws.com:5432/agenda</mvn.jdbc.jdbcUrl>
 				<mvn.jdbc.username>agenda</mvn.jdbc.username>
-				<mvn.jdbc.password>agendaa</mvn.jdbc.password>
+				<mvn.jdbc.password>agendaagenda</mvn.jdbc.password>
 
 				<!-- Hibernate -->
 				<mvn.hibernate.hbm2ddl>update</mvn.hibernate.hbm2ddl>
@@ -113,6 +113,12 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+			<exclusions>
+		    	<exclusion>
+			      	<groupId>org.springframework.boot</groupId>
+			      	<artifactId>spring-boot-starter-logging</artifactId>
+		    	</exclusion>
+		  	</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

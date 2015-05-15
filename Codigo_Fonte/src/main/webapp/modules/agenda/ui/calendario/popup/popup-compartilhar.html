@@ -1,0 +1,40 @@
+<md-dialog aria-label="Mango (Fruit)">
+    <md-content>
+
+        <h2>Compartilhar compromisso</h2>
+
+        <form name="compartilharForm" novalidate="true">
+            <md-input-container>
+                <label>Amigo (filtro)</label>
+                <input name="campo" ng-model="campo">
+            </md-input-container>
+            
+            <md-content>
+                    
+<!--                    <div ng-repeat="friend in friends | filter: campo ">
+                        <table>
+                            <tbody>
+                                <td>{{::friend.name}}</td>
+                                <td><md-button ng-click="enviar()" class="md-primary"> Enviar </md-button></td>
+                            </tbody>                            
+                        </table>
+                    </div>-->
+                <md-list>
+                    <md-list-item ng-repeat="friend in friends | filter: campo" layout="row" layout-align="center center">
+                       
+                         <md-button ng-click="enviar(friend)" class="md-primary md-secondary"> {{friend.name}} </md-button>
+                       
+                     </md-list-item>
+                 </md-list>
+            
+            </md-content>
+           
+            <div class="md-actions" layout="row">
+                <md-button ng-click="cancelar()" class="md-primary">
+                    Cancelar
+                </md-button>
+            </div>
+        </form>
+
+    </md-content>
+</md-dialog>

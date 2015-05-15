@@ -78,11 +78,11 @@
 			  	</md-select>
 			  	
 			    <md-select placeholder="Categoria de compromisso" ng-model="currentEntity.categoriaCompromisso">
-				    <md-option ng-repeat="categoria in listaCategorias" ng-value="categoria">{{categoria.descricao}}</md-option>
+				    <md-option ng-repeat="categoria in listaCategorias" ng-value="categoria" ng-selected="categoria.id == currentEntity.categoriaCompromisso.id">{{::categoria.descricao}}</md-option>
 			  	</md-select>
 			  	
 			    <md-select placeholder="Tipo de compromisso" ng-model="currentEntity.tipoCompromisso">
-				    <md-option ng-repeat="tipo in listaTipos" ng-value="tipo">{{tipo.descricao}}</md-option>
+				    <md-option ng-repeat="tipo in listaTipos" ng-value="tipo" ng-selected="tipo.id == currentEntity.tipoCompromisso.id">{{::tipo.descricao}}</md-option>
 			  	</md-select>
 			  	
 		  	</md-content>
@@ -91,7 +91,7 @@
 		
 		<md-button ng-click="insertCompromisso()" class="md-raised md-primary" ng-if="currentState == 'agenda.inserir'">SALVAR</md-button>
 		<md-button ng-click="updateCompromisso()" class="md-raised md-primary" ng-if="currentState == 'agenda.alterar'">ATUALIZAR</md-button>
-		<md-button ng-click="removeCompromisso()" class="md-raised md-primary" 
+		<md-button ng-click="removeCompromisso()" class="md-raised md-warn" 
 		ng-if="currentState == 'agenda.alterar'">EXCLUIR</md-button>
 		<md-button ui-sref="agenda.listar" class="md-raised">CANCELAR</md-button>
 		

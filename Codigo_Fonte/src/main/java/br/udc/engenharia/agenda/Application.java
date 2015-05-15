@@ -16,6 +16,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 import br.udc.engenharia.agenda.application.security.AuthenticationFailureHandler;
+import br.udc.engenharia.agenda.application.security.AuthenticationSuccessHandler;
+import br.udc.engenharia.agenda.application.security.LogoutSuccessHandler;
 
 /**
  * 
@@ -75,9 +77,11 @@ public class Application extends SpringBootServletInitializer
 								.loginPage( "/authentication" )
 								.loginProcessingUrl( "/authenticate" )
 								.failureHandler( new AuthenticationFailureHandler() )
+								.successHandler( new AuthenticationSuccessHandler() )
 							.permitAll()
 						.and()
 							.logout()
+								.logoutSuccessHandler( new LogoutSuccessHandler() )
 								.logoutUrl( "/logout" );
 		}
 	}

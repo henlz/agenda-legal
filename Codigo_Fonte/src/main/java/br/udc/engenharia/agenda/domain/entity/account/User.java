@@ -110,6 +110,21 @@ public class User extends AbstractEntity implements Serializable, UserDetails
 	/**
 	 * 
 	 * @param id
+	 * @param name
+	 * @param email
+	 */
+	public User( Long id, String name, String email)
+	{
+		super( id );
+		this.email = email;
+		this.name = name;
+	}
+	/**
+	 * 
+	 * @param id
+	 * @param name
+	 * @param email
+	 * @param enabled
 	 */
 	public User( Long id, String name, String email, boolean enabled )
 	{
@@ -122,6 +137,10 @@ public class User extends AbstractEntity implements Serializable, UserDetails
 	/**
 	 * 
 	 * @param id
+	 * @param name
+	 * @param email
+	 * @param enabled
+	 * @param role
 	 */
 	public User( Long id, String name, String email, boolean enabled, UserRole role )
 	{
@@ -135,6 +154,12 @@ public class User extends AbstractEntity implements Serializable, UserDetails
 	/**
 	 * 
 	 * @param id
+	 * @param name
+	 * @param email
+	 * @param enabled
+	 * @param role
+	 * @param password
+	 * @param contatos
 	 */
 	public User( Long id, String name, String email, boolean enabled, UserRole role, String password, List<Contato> contatos )
 	{
