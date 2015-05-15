@@ -55,7 +55,7 @@
         	</activation>
 			<properties>
 				<!-- Database -->
-				<mvn.jdbc.jdbcUrl>jdbc:postgresql://aa1l5jofbd3wun3.czzt7b8qriyh.us-west-2.rds.amazonaws.com:5432/agenda</mvn.jdbc.jdbcUrl>
+				<mvn.jdbc.jdbcUrl>jdbc:postgresql://agenda.cwalsqj3fiia.sa-east-1.rds.amazonaws.com:5432/agenda</mvn.jdbc.jdbcUrl>
 				<mvn.jdbc.username>agenda</mvn.jdbc.username>
 				<mvn.jdbc.password>agendaagenda</mvn.jdbc.password>
 
@@ -69,7 +69,7 @@
 			<id>sandbox</id>
 			<properties>
 				<!-- Database -->
-				<mvn.jdbc.jdbcUrl>jdbc:postgresql://aa1l5jofbd3wun3.czzt7b8qriyh.us-west-2.rds.amazonaws.com:5432/agenda</mvn.jdbc.jdbcUrl>
+				<mvn.jdbc.jdbcUrl>jdbc:postgresql://agenda.cwalsqj3fiia.sa-east-1.rds.amazonaws.com:5432/agenda</mvn.jdbc.jdbcUrl>
 				<mvn.jdbc.username>agenda</mvn.jdbc.username>
 				<mvn.jdbc.password>agendaagenda</mvn.jdbc.password>
 
