@@ -1,0 +1,54 @@
+<div layout="column" layout-align="center center">
+    <md-whiteframe class="md-whiteframe-z5" layout layout-align="center center" layout-padding style="width: 500px;">
+        <form id="formUsuario" novalidate="true" layout-fill>
+
+            <md-subheader class="md-primary">Usuário</md-subheader>
+            <md-divider></md-divider>
+
+            <md-content md-theme="docs-dark" class="md-padding" layout="column" layout-sm="row">
+                <md-input-container>
+                    <label>Nome</label>
+                    <input name="titulo" ng-model="currentEntity.name" required>
+
+                    <div ng-messages="formCompromisso.titulo.$error">
+                        <div ng-message="required">
+                            Campo obrigatório.
+                        </div>
+                    </div>
+                </md-input-container>
+
+                <md-input-container>
+                    <label>E-mail</label>
+                    <input type="email" ng-model="currentEntity.email">
+                </md-input-container>
+
+                <md-input-container>
+                    <label>Senha</label>
+                    <input type="password" ng-model="currentEntity.password">
+                </md-input-container>
+
+                <md-select ng-model="currentEntity.role" placeholder="Privilégios">
+                    <md-option value="ADMINISTRATOR" >Administrador</md-option>
+                    <md-option value="USER">Usuário</md-option>
+                </md-select>
+
+            </md-content>
+            <md-divider></md-divider>
+            <md-content layout-margin>
+                <md-button ng-click="insertUsuario()" class="md-raised md-primary"
+                           ng-if="currentState == 'usuario.inserir'">
+                    SALVAR
+                </md-button>
+                <md-button ng-click="updateUsuario()" class="md-raised md-primary"
+                           ng-if="currentState == 'usuario.alterar'">
+                    ATUALIZAR
+                </md-button>
+                <md-button ng-click="removeUsuario()" class="md-raised md-warn"
+                           ng-if="currentState == 'agenda.alterar'">
+                    EXCLUIR
+                </md-button>
+                <md-button ui-sref="usuario.listar" class="md-raised">CANCELAR</md-button>
+            </md-content>
+        </form>
+    </md-whiteframe>
+</div>

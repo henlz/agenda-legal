@@ -22,8 +22,10 @@ public interface ICategoriaCompromissoRepository extends JpaRepository<Categoria
 	 * @param pageable
 	 * @return
 	 */
-	@Query(value="SELECT new CategoriaCompromisso( categoriaCompromisso.id, categoriaCompromisso.descricao, categoriaCompromisso.usuario ) " +
+	@Query(value="SELECT new CategoriaCompromisso( categoriaCompromisso.id, categoriaCompromisso.descricao, categoriaCompromisso.usuario, categoriaCompromisso.doSistema ) " +
 				   "FROM CategoriaCompromisso categoriaCompromisso " +
-				  "WHERE (categoriaCompromisso.usuario.id = CAST(:userId AS int) OR :userId = NULL)" )
+				   "WHERE ( categoriaCompromisso.doSistema = TRUE "
+				  + "OR categoriaCompromisso.usuario.id = CAST(:userId AS int) "
+				  + "OR :userId = NULL)" )
 	public List<CategoriaCompromisso> listByUser( @Param("userId") Long userId );
 }

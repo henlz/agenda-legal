@@ -1,0 +1,42 @@
+<md-content>
+
+    <md-whiteframe class="md-whiteframe-z5" layout-align="center center" layout-padding style="width: 500px;">
+        <md-subheader class="md-primary">Usuário</md-subheader>
+        <md-divider></md-divider>
+
+        <md-content class="md-padding" layout="row" layout-sm="row">
+            <md-input-container>
+                <label>Nome do compromisso</label>
+                <input name="nome" ng-model="filtros.nome" required>
+            </md-input-container>
+
+            <md-input-container>
+                <label>Data Início</label>
+                <input name="dataInicio" ng-model="filtros.dataInicio" ui-date="dateOptions" required>
+            </md-input-container>
+
+            <md-input-container>
+                <label>Data Fim</label>
+                <input name="dataFim" ng-model="filtros.dataFim" ui-date="dateOptions">
+            </md-input-container>
+
+            <md-select placeholder="Categoria de compromisso" ng-model="filtros.categoriaCompromisso">
+                <md-option ng-repeat="categoria in listaCategorias" ng-value="categoria" >{{::categoria.descricao}}
+                </md-option>
+            </md-select>
+
+            <md-select placeholder="Tipo de compromisso" ng-model="filtros.tipoCompromisso">
+                <md-option ng-value="" >
+                </md-option>
+                <md-option ng-repeat="tipo in listaTipos" ng-value="tipo" >{{::tipo.descricao}}
+                </md-option>
+            </md-select>
+        </md-content>
+        <md-button class="md-raised md-primary" ng-click="pesquisarCompromissos()">Pesquisar</md-button>
+        <md-divider></md-divider>
+        <md-content layout-margin>
+            <div ng-grid="gridSearchOptions" style="width: 100%; height:600px;"></div>
+        </md-content>
+    </md-whiteframe>
+
+</md-content>

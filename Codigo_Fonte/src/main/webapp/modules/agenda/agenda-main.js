@@ -26,9 +26,26 @@
 			url: '/listar'
 		}).state('agenda.inserir', {
 			url: '/inserir'
+		}).state('agenda.pesquisar', {
+			url: '/pesquisar'
 		}).state('agenda.alterar', {
 			url: '/alterar/:id'
 		}).state('agenda.detalhe', {
+			url: '/detalhe/:id'
+		});
+
+        // Compromisso
+        $stateProvider.state('usuario',{
+			url : "/usuario",
+			controller : 'UsuarioController',
+			templateUrl : "./modules/agenda/ui/usuarios/usuario-view.jsp"
+		}).state('usuario.listar', {
+			url: '/listar'
+		}).state('usuario.inserir', {
+			url: '/inserir'
+		}).state('usuario.alterar', {
+			url: '/alterar/:id'
+		}).state('usuario.detalhe', {
 			url: '/detalhe/:id'
 		});
 

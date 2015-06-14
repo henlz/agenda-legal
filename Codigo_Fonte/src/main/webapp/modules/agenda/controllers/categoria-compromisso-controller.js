@@ -137,7 +137,7 @@
     	}
     	
     	
-    	var DELETE_COLUMN_TEMPLATE = "<md-button ng-click=\"showUpdatePopup($event, row.entity)\">Alterar</md-button> <md-button ng-click=\"removerRegistro(row.entity)\">Excluír</md-button>";
+    	var DELETE_COLUMN_TEMPLATE = "<md-button ng-if=\"!row.entity.doSistema\" ng-click=\"showUpdatePopup($event, row.entity)\">Alterar</md-button> <md-button ng-if=\"!row.entity.doSistema\" ng-click=\"removerRegistro(row.entity)\">Excluír</md-button>";
     	
     	/**
     	 * 

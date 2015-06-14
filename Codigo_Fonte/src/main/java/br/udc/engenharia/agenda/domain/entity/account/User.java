@@ -66,7 +66,7 @@ public class User extends AbstractEntity implements Serializable, UserDetails
 	 */
 	@NotNull
 	@Column(nullable = false)
-	private Boolean enabled;
+	private boolean enabled;
 	/**
 	 * 
 	 */
@@ -247,7 +247,7 @@ public class User extends AbstractEntity implements Serializable, UserDetails
 	{
 		return this.enabled;
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * @see

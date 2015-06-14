@@ -22,8 +22,10 @@ public interface ITipoCompromissoRepository extends JpaRepository<TipoCompromiss
 	 * @param pageable
 	 * @return
 	 */
-	@Query(value="SELECT new TipoCompromisso( tipoCompromisso.id, tipoCompromisso.descricao, tipoCompromisso.usuario ) " +
-				   "FROM TipoCompromisso tipoCompromisso " +
-				  "WHERE (tipoCompromisso.usuario.id = CAST(:userId AS int) OR :userId = NULL)" )
+	@Query(value="SELECT new TipoCompromisso( tipoCompromisso.id, tipoCompromisso.descricao, tipoCompromisso.usuario, tipoCompromisso.doSistema ) " +
+				   "FROM TipoCompromisso tipoCompromisso "
+				  + "WHERE ( tipoCompromisso.doSistema = TRUE "
+				  + "OR  :userId = NULL "
+				  + "OR tipoCompromisso.usuario.id = CAST(:userId AS int) )" )
 	public List<TipoCompromisso> listByUser( @Param("userId") Long userId );
 }

@@ -1,7 +1,9 @@
 package br.udc.engenharia.agenda.domain.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Timer;
 
 import org.directwebremoting.annotations.RemoteProxy;
 import org.joda.time.DateTime;
@@ -25,6 +27,7 @@ import br.udc.engenharia.agenda.domain.repository.ICategoriaCompromissoRepositor
 import br.udc.engenharia.agenda.domain.repository.ICompartilhamentoCompromissoRepository;
 import br.udc.engenharia.agenda.domain.repository.ICompromissoRepository;
 import br.udc.engenharia.agenda.domain.repository.ITipoCompromissoRepository;
+import br.udc.engenharia.agenda.infrastructure.mail.WarningEmailSender;
 
 /**
  * 
@@ -89,7 +92,12 @@ public class CompromissoService
 
 		this.loggingService.recordTextFile( usuario.getName(), "Usuário " + usuario.getName() + " cadastrou o compromisso " + compromisso.getTitulo() );
 
-		return this.compromissoRepository.save( compromisso );
+		compromisso = this.compromissoRepository.save( compromisso );
+		Assert.notNull( compromisso, "Erro ao salvar o compromisso" );
+
+		this.scheduleCompromissoWarningEmail( compromisso );
+
+		return compromisso;
 	}
 
 	/**
@@ -140,6 +148,18 @@ public class CompromissoService
 		}
 
 		return compromissos;
+	}
+	/**
+	 * 
+	 * @param filter
+	 * @param pageable
+	 * @return
+	 */
+	public List<Agenda> listAgendasByFilters( String titulo, Date dataInicio, Date dataFim, Long tipoCompromissoId, Long categoriaCompromissoId )
+	{
+		System.out.println("Data Inicio: " + dataInicio);
+		System.out.println("Data Fim: " + dataFim);
+		return this.agendaRepository.listByFilters( titulo, dataInicio, dataFim, categoriaCompromissoId, tipoCompromissoId );
 	}
 
 	/**
@@ -265,7 +285,7 @@ public class CompromissoService
 	{
 		User usuario = ContextHolder.getAuthenticatedUser();
 
-		TipoCompromisso tipoCompromisso = new TipoCompromisso( null, descricao, usuario );
+		TipoCompromisso tipoCompromisso = new TipoCompromisso( null, descricao, usuario, false );
 
 		this.loggingService.recordTextFile( usuario.getName(), "Usuário " + usuario.getName() + " cadastrou o tipo de compromisso " + tipoCompromisso.getDescricao() );
 
@@ -297,7 +317,7 @@ public class CompromissoService
 	{
 		User usuario = ContextHolder.getAuthenticatedUser();
 
-		CategoriaCompromisso categoriaCompromisso = new CategoriaCompromisso( null, descricao, usuario );
+		CategoriaCompromisso categoriaCompromisso = new CategoriaCompromisso( null, descricao, usuario, false );
 
 		this.loggingService.recordTextFile( usuario.getName(), "Usuário " + usuario.getName() + " cadastrou a categoria de compromisso " + descricao );
 
@@ -326,7 +346,7 @@ public class CompromissoService
 	 */
 	public List<CategoriaCompromisso> listCategoriasCompromissos()
 	{
-		return this.categoriaCompromissoRepository.listByUser( ( ContextHolder.getAuthenticatedUser() ).getId() );
+		return this.categoriaCompromissoRepository.listByUser( ContextHolder.getAuthenticatedUser().getId() );
 	}
 
 	/**
@@ -335,7 +355,7 @@ public class CompromissoService
 	 */
 	public List<TipoCompromisso> listTiposCompromissos()
 	{
-		return this.tipoCompromissoRepository.listByUser( ( ContextHolder.getAuthenticatedUser() ).getId() );
+		return this.tipoCompromissoRepository.listByUser( ContextHolder.getAuthenticatedUser().getId() );
 	}
 
 	/**
@@ -360,6 +380,7 @@ public class CompromissoService
 		User usuario = ContextHolder.getAuthenticatedUser();
 
 		TipoCompromisso tipoCompromisso = this.tipoCompromissoRepository.findOne( tipoCompromissoId );
+		Assert.isTrue( tipoCompromisso.getUsuario().equals( usuario ) );
 		this.tipoCompromissoRepository.delete( tipoCompromisso );
 
 		this.loggingService.recordTextFile( usuario.getName(), "Usuário " + usuario.getName() + " excluíu o tipo de compromisso " + tipoCompromisso.getDescricao() );
@@ -420,6 +441,19 @@ public class CompromissoService
 		Assert.notNull( compartilhamentoCompromisso, "Nenhum compromisso compartilhado encontrado!" );
 
 		this.compartilhamentoCompromissoRepository.delete( compartilhamentoCompromisso );
+
+	}
+
+	/**
+	 * s
+	 * 
+	 * @param compromisso
+	 */
+	private void scheduleCompromissoWarningEmail( Compromisso compromisso )
+	{
+		Timer timer = new Timer();
+		// Schedule to run every Sunday in midnight
+		timer.schedule( new WarningEmailSender( compromisso ), compromisso.getDataInicio() );
 
 	}
 

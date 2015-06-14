@@ -41,6 +41,12 @@ public class CategoriaCompromisso extends AbstractEntity implements Serializable
 	 */
 	@ManyToOne
 	private User usuario;
+	
+	/**
+	 * 
+	 */
+	@Column
+	private Boolean doSistema;
 
 	/**
 	 * 
@@ -54,11 +60,12 @@ public class CategoriaCompromisso extends AbstractEntity implements Serializable
 	 * @param descricao
 	 * @param usuario
 	 */
-	public CategoriaCompromisso( Long id, String descricao, User usuario )
+	public CategoriaCompromisso( Long id, String descricao, User usuario, Boolean doSistema )
 	{
 		super(id);
 		this.descricao = descricao;
 		this.usuario = usuario;
+		this.doSistema = doSistema;
 	}
 	
 	/**
@@ -108,7 +115,22 @@ public class CategoriaCompromisso extends AbstractEntity implements Serializable
 		this.usuario = usuario;
 	}
 
+	/**
+	 * @return the doSistema
+	 */
+	public Boolean getDoSistema()
+	{
+		return doSistema;
+	}
 
+	/**
+	 * @param doSistema the doSistema to set
+	 */
+	public void setDoSistema( Boolean doSistema )
+	{
+		this.doSistema = doSistema;
+	}
+	
 	/**
 	 * @return the serialversionuid
 	 */

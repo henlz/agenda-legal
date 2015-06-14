@@ -104,5 +104,9 @@
 			</bean>
 		</property>
 	</bean>
+	
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+	    <property name="host" value="mail.mycompany.com"/>
+	</bean>
     
 </beans>

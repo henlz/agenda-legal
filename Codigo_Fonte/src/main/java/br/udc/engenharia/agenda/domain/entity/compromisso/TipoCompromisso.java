@@ -22,10 +22,12 @@ import br.udc.engenharia.agenda.domain.entity.account.User;
 public class TipoCompromisso extends AbstractEntity implements Serializable
 {
 	
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2049158151247085078L;
+	private static final long serialVersionUID = -104485770100383066L;
+
 
 	/**
 	 * 
@@ -40,6 +42,12 @@ public class TipoCompromisso extends AbstractEntity implements Serializable
 	 */
 	@ManyToOne
 	private User usuario;
+	
+	/**
+	 * 
+	 */
+	@Column
+	private Boolean doSistema;
 
 	/**
 	 * 
@@ -53,11 +61,12 @@ public class TipoCompromisso extends AbstractEntity implements Serializable
 	 * @param descricao
 	 * @param usuario
 	 */
-	public TipoCompromisso( Long id, String descricao, User usuario )
+	public TipoCompromisso( Long id, String descricao, User usuario, Boolean doSistema )
 	{
 		super(id);
 		this.descricao = descricao;
 		this.usuario = usuario;
+		this.doSistema = doSistema;
 	}
 	
 	/**
@@ -114,6 +123,22 @@ public class TipoCompromisso extends AbstractEntity implements Serializable
 	public static long getSerialversionuid()
 	{
 		return serialVersionUID;
+	}
+
+	/**
+	 * @return the doSistema
+	 */
+	public Boolean getDoSistema()
+	{
+		return doSistema;
+	}
+
+	/**
+	 * @param doSistema the doSistema to set
+	 */
+	public void setDoSistema( Boolean doSistema )
+	{
+		this.doSistema = doSistema;
 	}
 	
 	

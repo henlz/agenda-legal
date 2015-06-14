@@ -11,11 +11,14 @@
 	<div ng-switch-when="agenda.listar">
 		<div ng-include="'./modules/agenda/ui/calendario/calendario-list.jsp'"></div>
 	</div>
+	<div ng-switch-when="agenda.pesquisar">
+		<div ng-include="'./modules/agenda/ui/calendario/calendario-search.html'"></div>
+	</div>
 	<div ng-switch-when="agenda.inserir">
-		<div ng-include="'./modules/agenda/ui/calendario/calendario-insert.jsp'"></div>
+		<div ng-include="'./modules/agenda/ui/calendario/calendario-insert.html'"></div>
 	</div>
 	<div ng-switch-when="agenda.alterar">
-		<div ng-include="'./modules/agenda/ui/calendario/calendario-insert.jsp'"></div>
+		<div ng-include="'./modules/agenda/ui/calendario/calendario-insert.html'"></div>
 	</div>
 	<div ng-switch-when="agenda.detalhe">
 		<div ng-include="'./modules/agenda/ui/calendario/calendario-detail.jsp'"></div>

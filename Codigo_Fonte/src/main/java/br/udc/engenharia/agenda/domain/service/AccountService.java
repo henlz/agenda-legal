@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.directwebremoting.annotations.RemoteProxy;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.dao.SaltSource;
 import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -72,6 +73,7 @@ public class AccountService
 	 * @param cliente
 	 * @return
 	 */
+	@PreAuthorize("hasRole('ADMINISTRATOR')")
 	public User insertUser( User user )
 	{
 		Assert.notNull( user );
@@ -89,8 +91,23 @@ public class AccountService
 	 * @param user
 	 * @return
 	 */
+	@PreAuthorize("hasRole('ADMINISTRATOR')")
 	public User updateUser( User user )
 	{
+		System.out.println("Usuario: "+user.getEnabled());
+		return this.userRepository.save( user );
+	}
+	
+	/**
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@PreAuthorize("hasRole('ADMINISTRATOR')")
+	public User changeUserStatus (Long id, Boolean status) 
+	{
+		User user = this.userRepository.findOne( id );
+		user.setEnabled( status );
 		return this.userRepository.save( user );
 	}
 
@@ -156,6 +173,27 @@ public class AccountService
 		}
 
 		return null;
+	}
+	
+	/**
+	 * 
+	 * @param filters
+	 * @return
+	 */
+	@PreAuthorize("hasRole('ADMINISTRATOR')")
+	public User findUserById( Long id )
+	{
+		return this.userRepository.findOne( id );
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	@PreAuthorize("hasRole('ADMINISTRATOR')")
+	public List<User> listUsuarios()
+	{
+		return this.userRepository.findAll();
 	}
 
 	/**
@@ -249,7 +287,7 @@ public class AccountService
 				friends.add( contato.getUsuarioDestino() );
 			}
 		}
-		
+
 		return friends;
 	}
 }
