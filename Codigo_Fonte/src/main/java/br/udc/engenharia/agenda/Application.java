@@ -1,5 +1,9 @@
 package br.udc.engenharia.agenda;
 
+import java.util.Properties;
+
+import javax.inject.Inject;
+
 import org.directwebremoting.spring.DwrSpringServlet;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -8,9 +12,13 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.embedded.ServletRegistrationBean;
 import org.springframework.boot.context.web.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.env.Environment;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -31,6 +39,9 @@ public class Application extends SpringBootServletInitializer
 	{
 		SpringApplication.run( Application.class, args );
 	}
+	
+	@Inject
+	private Environment environment;
 
 	@Override
 	protected SpringApplicationBuilder configure( SpringApplicationBuilder application )
@@ -51,6 +62,21 @@ public class Application extends SpringBootServletInitializer
 		registration.setName( "dwrSpringServlet" );
 		return registration;
 	}
+	
+//	@Bean
+//	public JavaMailSender createMailSender() {
+//		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+//		mailSender.setDefaultEncoding("UTF-8");
+//		mailSender.setHost("smtp.gmail.com");
+//		mailSender.setPort(587);
+//		mailSender.setUsername("hnlbzg");
+//		mailSender.setPassword("HeloeRick.031012");
+//		Properties properties = new Properties();
+//		properties.put("mail.smtp.auth", true);
+//		properties.put("mail.smtp.starttls.enable", true);
+//		mailSender.setJavaMailProperties(properties);
+//		return mailSender;
+//	}
 
 //----------Security
 	@Configuration
@@ -66,23 +92,8 @@ public class Application extends SpringBootServletInitializer
 		protected void configure( HttpSecurity httpSecurity ) throws Exception
 		{
 			httpSecurity.csrf().disable();
-			
-			httpSecurity
-				.authorizeRequests()
-					.anyRequest()
-						.authenticated()
-						.and()
-							.formLogin()
-								.usernameParameter( "email" )
-								.loginPage( "/authentication" )
-								.loginProcessingUrl( "/authenticate" )
-								.failureHandler( new AuthenticationFailureHandler() )
-								.successHandler( new AuthenticationSuccessHandler() )
-							.permitAll()
-						.and()
-							.logout()
-								.logoutSuccessHandler( new LogoutSuccessHandler() )
-								.logoutUrl( "/logout" );
+
+			httpSecurity.authorizeRequests().anyRequest().authenticated().and().formLogin().usernameParameter( "email" ).loginPage( "/authentication" ).loginProcessingUrl( "/authenticate" ).failureHandler( new AuthenticationFailureHandler() ).successHandler( new AuthenticationSuccessHandler() ).permitAll().and().logout().logoutSuccessHandler( new LogoutSuccessHandler() ).logoutUrl( "/logout" );
 		}
 	}
 }

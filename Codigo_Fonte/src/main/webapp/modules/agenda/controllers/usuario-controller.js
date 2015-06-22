@@ -162,7 +162,7 @@
                 "<md-button class=\"md-icon-button\" ui-sref=\"usuario.alterar({id: row.entity.id})\"><i class=\"md-icon md-icon-edit\"></i></md-button>" +
                     //"<md-button class=\"md-icon-button\" ng-click=\"excluirUsuario(row.entity)\"><i class=\"md-icon md-icon-delete\"></i></md-button>" +
                 "<md-button ng-if=\"row.entity.enabled == false\" class=\"md-icon-button\" ng-click=\"changeUserStatus(row.entity, true)\"><i class=\"md-icon md-icon-check\"></i></md-button>" +
-                "<md-button ng-if=\"row.entity.enabled == true\" class=\"md-icon-button\" ng-click=\"excluirUsuario(row.entity, false)\"><i class=\"md-icon md-icon-clear\"></i></md-button>" +
+                "<md-button ng-if=\"row.entity.enabled == true\" class=\"md-icon-button\" ng-click=\"changeUserStatus(row.entity, false)\"><i class=\"md-icon md-icon-clear\"></i></md-button>" +
                 "</div>";
 
             /**
@@ -172,7 +172,19 @@
             $scope.changeUserStatus = function (entity, status) {
                 accountService.changeUserStatus(entity.id, status, {
                     callback: function (result) {
-                        entity = result;
+                        for (var i = 0; i < $scope.listaSecoes; i++) {
+                            if ($scope.listaUsuarios[i].id == result.id) {
+                                $scope.listaUsuarios[i] = result;
+                            }
+                        }
+
+                        var toast = $mdToast.simple()
+                            .content("Status do usuário atualizado com sucesso!")
+                            .action('Fechar')
+                            .highlightAction(false)
+                            .position('bottom');
+                        $mdToast.show(toast);
+
                         $scope.$apply();
                     },
                     errorHandler: function (message, error) {

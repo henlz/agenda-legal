@@ -4,9 +4,16 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 
 import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import br.udc.engenharia.agenda.domain.entity.EventoLog;
+import br.udc.engenharia.agenda.domain.entity.account.User;
+import br.udc.engenharia.agenda.domain.repository.IEventoLogRepository;
 
 /**
  * @author Henrique
@@ -16,6 +23,12 @@ import org.springframework.stereotype.Service;
 public class LoggingService
 {
 
+	/**
+	 * 
+	 */
+	@Autowired
+	private IEventoLogRepository eventoLogRepository;
+	
 	/**
 	 * 
 	 * @param fileName
@@ -48,6 +61,26 @@ public class LoggingService
 //			e.printStackTrace();
 //		}
 //	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public List<EventoLog> listEventosLog()
+	{
+		User usuarioLogado = ( User ) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		return this.eventoLogRepository.findByUsuario( usuarioLogado );
+	}
+
+	/**
+	 * 
+	 * @param eventoLog
+	 * @return
+	 */
+	public EventoLog insertEventoLog( EventoLog eventoLog )
+	{
+		return this.eventoLogRepository.save( eventoLog );
+	}
 	
 	/**
 	 * 

@@ -82,6 +82,13 @@
 			url: "/inserir"
 		});
 
+		// Contatos
+		$stateProvider.state('logs',{
+			url : "/logs",
+			controller : 'LogsController',
+			templateUrl : "./modules/agenda/ui/log/log-view.jsp"
+		});
+
 	});
 
 	module.run( function( $rootScope, $window ) {

@@ -44,6 +44,7 @@
 		<angular-ui-calendar-webjars.version>0.9.0-beta.1</angular-ui-calendar-webjars.version>
 		<ng-grid-webjars.version>2.0.14</ng-grid-webjars.version>
 		<ui-date-webjars.version>0.0.5</ui-date-webjars.version>
+
 	</properties>
 
 	<!-- Profiles -->
@@ -165,6 +166,12 @@
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>1.4.3</version>
 		</dependency>
 
 		<!-- Testing -->

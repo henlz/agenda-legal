@@ -13,12 +13,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import br.udc.engenharia.agenda.domain.entity.EventoLog;
 import br.udc.engenharia.agenda.domain.entity.StatusSolicitacaoContato;
 import br.udc.engenharia.agenda.domain.entity.account.Contato;
 import br.udc.engenharia.agenda.domain.entity.account.ContatoUsuario;
 import br.udc.engenharia.agenda.domain.entity.account.User;
 import br.udc.engenharia.agenda.domain.repository.IContatoRepository;
 import br.udc.engenharia.agenda.domain.repository.IContatoUsuarioRepository;
+import br.udc.engenharia.agenda.domain.repository.IEventoLogRepository;
 import br.udc.engenharia.agenda.domain.repository.account.IUserRepository;
 
 /**
@@ -49,6 +51,12 @@ public class AccountService
 	 */
 	@Autowired
 	private IUserRepository userRepository;
+
+	/**
+	 * 
+	 */
+	@Autowired
+	private IEventoLogRepository eventoLogRepository;
 
 	/**
 	 * 
@@ -94,17 +102,17 @@ public class AccountService
 	@PreAuthorize("hasRole('ADMINISTRATOR')")
 	public User updateUser( User user )
 	{
-		System.out.println("Usuario: "+user.getEnabled());
+		System.out.println( "Usuario: " + user.getEnabled() );
 		return this.userRepository.save( user );
 	}
-	
+
 	/**
 	 * 
 	 * @param id
 	 * @return
 	 */
 	@PreAuthorize("hasRole('ADMINISTRATOR')")
-	public User changeUserStatus (Long id, Boolean status) 
+	public User changeUserStatus( Long id, Boolean status )
 	{
 		User user = this.userRepository.findOne( id );
 		user.setEnabled( status );
@@ -121,7 +129,10 @@ public class AccountService
 	{
 		User user = this.userRepository.findOne( id );
 		user.getContatos().add( contato );
-		this.loggingService.recordTextFile( user.getName(), "Usuário " + user.getName() + " adicionou o contato " + contato.getDescricao() );
+		String log = "Usuário " + user.getName() + " adicionou o contato " + contato.getDescricao();
+		EventoLog eventoLog = new EventoLog( log, user );
+		this.loggingService.insertEventoLog( eventoLog );
+//		this.loggingService.recordTextFile( user.getName(), "Usuário " + user.getName() + " adicionou o contato " + contato.getDescricao() );
 		return this.userRepository.save( user );
 	}
 
@@ -148,7 +159,10 @@ public class AccountService
 		user.getContatos().remove( contato );
 		this.userRepository.save( user );
 		this.contatoRepository.delete( contato );
-		this.loggingService.recordTextFile( user.getName(), "Usuário " + user.getName() + " adicionou o contato " + contato.getDescricao() );
+		String log = "Usuário " + user.getName() + " removeu o contato " + contato.getDescricao();
+		EventoLog eventoLog = new EventoLog( log, user );
+		this.loggingService.insertEventoLog( eventoLog );
+//		this.loggingService.recordTextFile( user.getName(), "Usuário " + user.getName() + " adicionou o contato " + contato.getDescricao() );
 	}
 
 	/**
@@ -174,7 +188,7 @@ public class AccountService
 
 		return null;
 	}
-	
+
 	/**
 	 * 
 	 * @param filters
@@ -211,7 +225,12 @@ public class AccountService
 			User usuarioLogado = ( User ) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
 			ContatoUsuario contatoUsuario = new ContatoUsuario( null, StatusSolicitacaoContato.PENDENTE, usuarioLogado, user );
-			this.loggingService.recordTextFile( usuarioLogado.getName(), "Usuário " + usuarioLogado.getName() + " enviou uma solicitação de contato para " + user.getName() );
+			String log = "Usuário " + usuarioLogado.getName() + " enviou uma solicitação de contato para " + user.getName();
+			EventoLog eventoLog = new EventoLog( log, user );
+			this.loggingService.insertEventoLog( eventoLog );
+			
+//			this.loggingService.recordTextFile( usuarioLogado.getName(), "Usuário " + usuarioLogado.getName() + " enviou uma solicitação de contato para " + user.getName() );
+			
 			return this.contatoUsuarioRepository.save( contatoUsuario );
 		}
 		else
@@ -230,7 +249,13 @@ public class AccountService
 		Assert.notNull( id );
 		ContatoUsuario contatoUsuario = this.contatoUsuarioRepository.findOne( id );
 		contatoUsuario.setStatus( StatusSolicitacaoContato.ACEITA );
-		this.loggingService.recordTextFile( contatoUsuario.getUsuarioDestino().getName(), "Usuário " + contatoUsuario.getUsuarioDestino().getName() + " aceitou a solicitação de contato do usuário " + contatoUsuario.getUsuarioOrigem().getName() );
+		
+		String log = "Usuário " + contatoUsuario.getUsuarioDestino().getName() + " aceitou a solicitação de contato do usuário " + contatoUsuario.getUsuarioOrigem().getName();
+		EventoLog eventoLog = new EventoLog( log, contatoUsuario.getUsuarioDestino() );
+		this.loggingService.insertEventoLog( eventoLog );
+		
+//		this.loggingService.recordTextFile( contatoUsuario.getUsuarioDestino().getName(), "Usuário " + contatoUsuario.getUsuarioDestino().getName() + " aceitou a solicitação de contato do usuário " + contatoUsuario.getUsuarioOrigem().getName() );
+		
 		return this.contatoUsuarioRepository.save( contatoUsuario );
 	}
 
@@ -289,5 +314,20 @@ public class AccountService
 		}
 
 		return friends;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public List<EventoLog> listEventosLog()
+	{
+		User usuarioLogado = ( User ) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		return this.eventoLogRepository.findByUsuario( usuarioLogado );
+	}
+
+	public EventoLog insertEventoLog( EventoLog eventoLog )
+	{
+		return this.eventoLogRepository.save( eventoLog );
 	}
 }

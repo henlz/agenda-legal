@@ -35,6 +35,7 @@
 	  	<script type="text/javascript" src="./modules/agenda/controllers/tipo-compromisso-controller.js?v=${version}"></script>
 	  	<script type="text/javascript" src="./modules/agenda/controllers/contatos-controller.js?v=${version}"></script>
 	  	<script type="text/javascript" src="./modules/agenda/controllers/usuario-controller.js?v=${version}"></script>
+	  	<script type="text/javascript" src="./modules/agenda/controllers/log-controller.js?v=${version}"></script>
 
 	</head>
 
@@ -51,6 +52,7 @@
                 <md-button ui-sref="tipo-compromisso.listar">Tipo de compromisso</md-button>
                 <md-button ui-sref="contatos.listar">Contatos</md-button>
                 <md-button ui-sref="usuario.listar">Usuários</md-button>
+                <md-button ui-sref="logs">Logs</md-button>
 				<md-button><a href="logout" > Logout</a></md-button>
 		    </section>
 		</md-toolbar>

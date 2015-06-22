@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import br.udc.engenharia.agenda.application.security.ContextHolder;
+import br.udc.engenharia.agenda.domain.entity.EventoLog;
 import br.udc.engenharia.agenda.domain.entity.account.User;
 import br.udc.engenharia.agenda.domain.entity.compromisso.Agenda;
 import br.udc.engenharia.agenda.domain.entity.compromisso.CategoriaCompromisso;
@@ -90,7 +91,11 @@ public class CompromissoService
 
 		this.arrangeAgenda( compromisso );
 
-		this.loggingService.recordTextFile( usuario.getName(), "Usuário " + usuario.getName() + " cadastrou o compromisso " + compromisso.getTitulo() );
+		String log = "Usuário " + usuario.getName() + " cadastrou o compromisso " + compromisso.getTitulo();
+		EventoLog eventoLog = new EventoLog( log, usuario );
+		this.loggingService.insertEventoLog( eventoLog );
+		
+//		this.loggingService.recordTextFile( usuario.getName(), "Usuário " + usuario.getName() + " cadastrou o compromisso " + compromisso.getTitulo() );
 
 		compromisso = this.compromissoRepository.save( compromisso );
 		Assert.notNull( compromisso, "Erro ao salvar o compromisso" );
@@ -116,7 +121,11 @@ public class CompromissoService
 		this.clearAgenda( compromisso );
 		this.arrangeAgenda( compromisso );
 
-		this.loggingService.recordTextFile( usuario.getName(), "Usuário " + usuario.getName() + " atualizou o compromisso " + compromisso.getTitulo() );
+		String log = "Usuário " + usuario.getName() + " atualizou o compromisso " + compromisso.getTitulo();
+		EventoLog eventoLog = new EventoLog( log, usuario );
+		this.loggingService.insertEventoLog( eventoLog );
+		
+//		this.loggingService.recordTextFile( usuario.getName(), "Usuário " + usuario.getName() + " atualizou o compromisso " + compromisso.getTitulo() );
 
 		return this.compromissoRepository.save( compromisso );
 	}
@@ -273,7 +282,11 @@ public class CompromissoService
 
 		this.compromissoRepository.delete( compromisso );
 
-		this.loggingService.recordTextFile( usuario.getName(), "Usuário " + usuario.getName() + " excluíu o compromisso " + compromisso.getTitulo() );
+		String log = "Usuário " + usuario.getName() + " excluíu o compromisso " + compromisso.getTitulo();
+		EventoLog eventoLog = new EventoLog( log, usuario );
+		this.loggingService.insertEventoLog( eventoLog );
+		
+//		this.loggingService.recordTextFile( usuario.getName(), "Usuário " + usuario.getName() + " excluíu o compromisso " + compromisso.getTitulo() );
 	}
 
 	/**
@@ -303,7 +316,10 @@ public class CompromissoService
 
 		tipoCompromisso.setUsuario( usuario );
 
-		this.loggingService.recordTextFile( usuario.getName(), "Usuário " + usuario.getName() + " atualizou o tipo de compromisso " + tipoCompromisso.getDescricao() );
+		String log = "Usuário " + usuario.getName() + " atualizou o tipo de compromisso " + tipoCompromisso.getDescricao();
+		EventoLog eventoLog = new EventoLog( log, usuario );
+		this.loggingService.insertEventoLog( eventoLog );
+//		this.loggingService.recordTextFile( usuario.getName(), "Usuário " + usuario.getName() + " atualizou o tipo de compromisso " + tipoCompromisso.getDescricao() );
 
 		return this.tipoCompromissoRepository.save( tipoCompromisso );
 	}
@@ -318,8 +334,11 @@ public class CompromissoService
 		User usuario = ContextHolder.getAuthenticatedUser();
 
 		CategoriaCompromisso categoriaCompromisso = new CategoriaCompromisso( null, descricao, usuario, false );
-
-		this.loggingService.recordTextFile( usuario.getName(), "Usuário " + usuario.getName() + " cadastrou a categoria de compromisso " + descricao );
+		
+		String log = "Usuário " + usuario.getName() + " cadastrou a categoria de compromisso " + descricao;
+		EventoLog eventoLog = new EventoLog( log, usuario );
+		this.loggingService.insertEventoLog( eventoLog );
+//		this.loggingService.recordTextFile( usuario.getName(), "Usuário " + usuario.getName() + " cadastrou a categoria de compromisso " + descricao );
 
 		return this.categoriaCompromissoRepository.save( categoriaCompromisso );
 	}
@@ -335,7 +354,11 @@ public class CompromissoService
 
 		categoriaCompromisso.setUsuario( usuario );
 
-		this.loggingService.recordTextFile( usuario.getName(), "Usuário " + usuario.getName() + " atualizou a categoria de compromisso " + categoriaCompromisso.getDescricao() );
+		String log = "Usuário " + usuario.getName() + " atualizou a categoria de compromisso " + categoriaCompromisso.getDescricao();
+		EventoLog eventoLog = new EventoLog( log, usuario );
+		this.loggingService.insertEventoLog( eventoLog );
+		
+//		this.loggingService.recordTextFile( usuario.getName(), "Usuário " + usuario.getName() + " atualizou a categoria de compromisso " + categoriaCompromisso.getDescricao() );
 
 		return this.categoriaCompromissoRepository.save( categoriaCompromisso );
 	}
@@ -368,7 +391,11 @@ public class CompromissoService
 
 		this.categoriaCompromissoRepository.delete( categoriaCompromisso );
 
-		this.loggingService.recordTextFile( usuario.getName(), "Usuário " + usuario.getName() + " excluíu a categoria de compromisso " + categoriaCompromisso.getDescricao() );
+		String log = "Usuário " + usuario.getName() + " excluíu a categoria de compromisso " + categoriaCompromisso.getDescricao();
+		EventoLog eventoLog = new EventoLog( log, usuario );
+		this.loggingService.insertEventoLog( eventoLog );
+		
+//		this.loggingService.recordTextFile( usuario.getName(), "Usuário " + usuario.getName() + " excluíu a categoria de compromisso " + categoriaCompromisso.getDescricao() );
 	}
 
 	/**
@@ -424,7 +451,13 @@ public class CompromissoService
 		compartilhamentoCompromisso.setUsuario( usuario );
 		compartilhamentoCompromisso.setAutor( usuarioLogado );
 
-		this.loggingService.recordTextFile( usuarioLogado.getName(), "Usuário " + usuarioLogado.getName() + " compartilhou um compromisso com " + usuario.getName() );
+		String log = "Usuário " + usuario.getName() + " cadastrou o compromisso " + compromisso.getTitulo();
+		EventoLog eventoLog = new EventoLog( log, usuario );
+		this.loggingService.insertEventoLog( eventoLog );
+		
+//		this.loggingService.recordTextFile( usuarioLogado.getName(), "Usuário " + usuarioLogado.getName() + " compartilhou um compromisso com " + usuario.getName() );
+		WarningEmailSender emailSender = new WarningEmailSender( compromisso, usuario );
+		emailSender.run();
 
 		return this.compartilhamentoCompromissoRepository.save( compartilhamentoCompromisso );
 	}
@@ -453,7 +486,10 @@ public class CompromissoService
 	{
 		Timer timer = new Timer();
 		// Schedule to run every Sunday in midnight
-		timer.schedule( new WarningEmailSender( compromisso ), compromisso.getDataInicio() );
+		Date dataEmail = (Date)compromisso.getDataInicio().clone();
+		dataEmail.setHours( dataEmail.getHours() - 1 );
+		
+		timer.schedule( new WarningEmailSender( compromisso, compromisso.getUsuario(), "O compromisso '"+ compromisso.getTitulo() + "' irá ocorrer daqui a uma hora." ), dataEmail );
 
 	}
 

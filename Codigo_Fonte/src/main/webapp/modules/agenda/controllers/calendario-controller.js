@@ -259,7 +259,10 @@
                     {displayName: "Data de início", field: "dataInicio", cellFilter: "date : 'dd/MM/yyyy - hh:mm'", width: "20%"},
                     {displayName: "Data de fim", field: "dataFim", cellFilter: "date : 'dd/MM/yyyy - hh:mm'", width: "20%"}
                 ],
-                jqueryUITheme: true
+                jqueryUITheme: true,
+                afterSelectionChange: function (rowItem, event) {
+                    $state.go($scope.DETAIL_STATE, {id: rowItem.entity.compromisso.id});
+                }
             };
 
             $scope.validaForm = function () {
